@@ -16,4 +16,9 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.14" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VisualScheduleApp.ApplicationServices\VisualScheduleApp.ApplicationServices.csproj" />
+    <ProjectReference Include="..\VisualScheduleApp.Data\VisualScheduleApp.Data.csproj" />
+  </ItemGroup>
+
 </Project>

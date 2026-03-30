@@ -1,0 +1,34 @@
+﻿@model VisualScheduleApp.Models.Children.ChildViewModel
+
+@{
+    ViewData["Title"] = "Child Details";
+}
+
+<h1>Child Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">@Model.Name</h4>
+        <hr />
+
+        <dl class="row">
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
+
+            <dt class="col-sm-3">Birth Date</dt>
+            <dd class="col-sm-9">@Model.BirthDate.ToShortDateString()</dd>
+
+            <dt class="col-sm-3">Age</dt>
+            <dd class="col-sm-9">@Model.Age</dd>
+
+            <dt class="col-sm-3">Created At</dt>
+            <dd class="col-sm-9">@Model.CreatedAt</dd>
+
+            <dt class="col-sm-3">Modified At</dt>
+            <dd class="col-sm-9">@Model.ModifiedAt</dd>
+        </dl>
+
+        <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-success">Update</a>
+        <a asp-action="Index" class="btn btn-danger">Back</a>
+    </div>
+</div>

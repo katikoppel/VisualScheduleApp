@@ -1,0 +1,51 @@
+﻿@model VisualScheduleApp.Models.Children.ChildViewModel
+
+@if (Model.Id != Guid.Empty)
+{
+    <h1>Update</h1>
+}
+else
+{
+    <h1>Create</h1>
+}
+
+<div>
+    <form method="post" enctype="multipart/form-data">
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="CreatedAt" type="hidden" />
+        <input asp-for="ModifiedAt" type="hidden" />
+
+        <div class="form-group row">
+            <label asp-for="Name" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+                <input  asp-for="Name" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="BirthDate" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+                <input asp-for="BirthDate" class="form-control" />
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            @if (Model.Id != Guid.Empty)
+            {
+                <button asp-action="update" asp-controller="Child" type="submit" class="btn btn-primary">
+                    Update
+                </button>
+            }
+            else
+            {
+                <button asp-action="create" asp-controller="Child" type="submit" class="btn btn-primary">
+                    Create
+                </button>
+            }
+
+            <a asp-action="Index" asp-controller="Child" class="btn btn-success">
+                Back
+            </a>
+        </div>
+    </form>
+</div>
