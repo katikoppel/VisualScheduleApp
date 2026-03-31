@@ -1,0 +1,86 @@
+﻿@model VisualScheduleApp.Models.Activities.ActivityViewModel
+
+@if (Model.Id != Guid.Empty)
+{
+    <h1>Uuenda tegevust</h1>
+}
+else
+{
+    <h1>Loo uus tegevus</h1>
+}
+
+<div>
+    <form method="post" enctype="multipart/form-data">
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="CreatedAt" type="hidden" />
+        <input asp-for="ModifiedAt" type="hidden" />
+
+        <div class="form-group row">
+            <label asp-for="Name" class="col-sm-2 col-form-label">Nimi</label>
+            <div class="col-sm-10">
+                <input asp-for="Name" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="Description" class="col-sm-2 col-form-label">Kirjeldus</label>
+            <div class="col-sm-10">
+                <input asp-for="Description" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label asp-for="Files" class="col-sm-2 col-form-label">Pildid</label>
+            <div class="col-sm-10">
+                <input class="form-control" asp-for="Files" multiple type="file" />
+            </div>
+        </div>
+
+        @if (Model.Image != null && Model.Image.Any())
+        {
+            <div class="d-flex flex-column gap-3">
+                @foreach (var images in Model.Image)
+                {
+                    <div class="image-row position-relative">
+                        <div class="image-preview">
+                            <partial name="_Images" model="images" />
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-sm btn-danger"
+                                formaction="@Url.Action("RemoveImage", "Activity", new { imageId = images.ImageId, activityId = Model.Id })"
+                                formmethod="post">
+                            Kustuta pilt
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="mt-4 d-flex gap-2">
+            @if (Model.Id != Guid.Empty)
+            {
+                <button asp-action="Update" asp-controller="Activity" type="submit" class="btn btn-primary">
+                    Uuenda
+                </button>
+            }
+            else
+            {
+                <button asp-action="Create" asp-controller="Activity" type="submit" class="btn btn-primary">
+                    Loo uus
+                </button>
+            }
+
+            <a asp-action="Index" asp-controller="Activity" class="btn btn-success">
+                Tagasi
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .image-row {
+        display: inline-block;
+        padding-left: 110px;
+    }
+</style>

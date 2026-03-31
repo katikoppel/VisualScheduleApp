@@ -1,0 +1,39 @@
+﻿@model VisualScheduleApp.Models.Activities.ActivityViewModel
+
+<h1>Kustuta tegevus</h1>
+
+<div>
+    <dl class="row">
+        <div class="form-group row">
+            <label asp-for="Id" class="col-sm-2 col-form-label">ID</label>
+            @Html.DisplayFor(model => model.Id)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group row">
+            <label asp-for="Name" class="col-sm-2 col-form-label">Nimi</label>
+            @Html.DisplayFor(model => model.Name)
+        </div>
+    </dl>
+
+    <dl class="row">
+        <div class="form-group row">
+            <label asp-for="Description" class="col-sm-2 col-form-label">Kirjeldus</label>
+            @Html.DisplayFor(model => model.Description)
+        </div>
+    </dl>
+
+    @foreach (var images in Model.Image)
+    {
+        <partial name="_Images" model="images" />
+    }
+
+    <hr />
+
+    <form asp-action="DeleteConfirmation" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger">Kustuta</button>
+        <a asp-action="Index" asp-controller="Activity" class="btn btn-success">Tagasi</a>
+    </form>
+</div>

@@ -12,6 +12,8 @@ builder.Services.AddDbContext<VisualScheduleAppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IChildServices, ChildServices>();
+builder.Services.AddScoped<IActivityServices, ActivityServices>();  
+builder.Services.AddScoped<IFileServices, FileServices>();
 
 var app = builder.Build();
 
@@ -29,6 +31,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.UseStaticFiles();
 
 app.MapControllerRoute(
     name: "default",
