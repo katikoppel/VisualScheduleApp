@@ -38,11 +38,14 @@
         </div>
     </dl>
 
-    @foreach (var images in Model.Image)
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
     {
-        <partial name="_Images" model="images" />
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <img src="@Model.ImagePath" style="max-width:200px;" class="img-thumbnail" />
+            </div>
+        </div>
     }
-
-    <hr />
+    <hr/>
     <a asp-action="Index" asp-controller="Activity" class="btn btn-danger">Tagasi</a>
 </div>

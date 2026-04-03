@@ -1,105 +1,48 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
-using VisualScheduleApp.Core.Domain;
-using VisualScheduleApp.Core.Dto;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using VisualScheduleApp.Core.ServiceInterface;
-using VisualScheduleApp.Data;
 
 namespace VisualScheduleApp.ApplicationServices.Services
 {
     public class FileServices : IFileServices
     {
-        private readonly IHostEnvironment _webHost;
-        private readonly VisualScheduleAppContext _context;
+        private readonly IHostEnvironment _env;
 
-        public FileServices
-            (
-                IHostEnvironment webHost,
-                VisualScheduleAppContext context
-            )
+        public FileServices(IHostEnvironment env)
         {
-            _webHost = webHost;
-            _context = context;
+            _env = env;
         }
 
-        public void FilesToApi(ActivityDto dto, Activity domain)
+        public async Task<string> UploadFile(IFormFile file)
         {
-            if (dto.Files != null && dto.Files.Count > 0)
+            var uploadsFolder = Path.Combine(_env.ContentRootPath, "wwwroot", "images");
+
+            if (!Directory.Exists(uploadsFolder))
             {
-                if (!Directory.Exists(_webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\"))
-                {
-                    Directory.CreateDirectory(_webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\");
-                }
-
-                foreach (var file in dto.Files)
-                {
-                    string uploadsFolder = Path.Combine(_webHost.ContentRootPath, "wwwroot", "multipleFileUpload");
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-
-                        FileToApi path = new FileToApi
-                        {
-                            Id = Guid.NewGuid(),
-                            FilePath = uniqueFileName,
-                            ActivityId = domain.Id
-                        };
-
-                        _context.FileToApis.Add(path);
-                    }
-                }
+                Directory.CreateDirectory(uploadsFolder);
             }
+
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return "/images/" + uniqueFileName;
         }
 
-        public async Task<FileToApi> RemoveImageFromApi(FileToApiDto dto)
+        public void DeleteFile(string filePath)
         {
-            var imageId = await _context.FileToApis
-                .FirstOrDefaultAsync(x => x.Id == dto.Id);
+            if (string.IsNullOrEmpty(filePath))
+                return;
 
-            if (imageId == null)
+            var fullPath = Path.Combine(_env.ContentRootPath, "wwwroot", filePath.TrimStart('/'));
+
+            if (File.Exists(fullPath))
             {
-                return null;
-            }
-
-            var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\"
-                + imageId.FilePath;
-
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            _context.FileToApis.Remove(imageId);
-            await _context.SaveChangesAsync();
-
-            return null;
-        }
-
-        public async Task RemoveImagesFromApi(FileToApiDto[] dtos)
-        {
-            foreach (var dto in dtos)
-            {
-                var imageId = await _context.FileToApis
-                    .FirstOrDefaultAsync(x => x.FilePath == dto.FilePath);
-
-                if (imageId == null)
-                {
-                    continue;
-                }
-
-                var filePath = _webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\"
-                    + imageId.FilePath;
-
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-
-                _context.FileToApis.Remove(imageId);
-                await _context.SaveChangesAsync();
+                File.Delete(fullPath);
             }
         }
     }

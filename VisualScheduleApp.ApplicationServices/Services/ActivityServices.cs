@@ -11,9 +11,11 @@ namespace VisualScheduleApp.ApplicationServices.Services
         private readonly VisualScheduleAppContext _context;
         private readonly IFileServices _fileServices;
 
-        public ActivityServices(
+        public ActivityServices
+            (
             VisualScheduleAppContext context,
-            IFileServices fileServices)
+            IFileServices fileServices
+            )
         {
             _context = context;
             _fileServices = fileServices;
@@ -30,7 +32,11 @@ namespace VisualScheduleApp.ApplicationServices.Services
                 ModifiedAt = DateTime.Now
             };
 
-            _fileServices.FilesToApi(dto, activity);
+            // File upload handling
+            if (dto.Files != null && dto.Files.Count > 0)
+            {
+                activity.ImagePath = await _fileServices.UploadFile(dto.Files[0]);
+            }
 
             await _context.Activities.AddAsync(activity);
             await _context.SaveChangesAsync();
@@ -41,7 +47,6 @@ namespace VisualScheduleApp.ApplicationServices.Services
         public async Task<Activity?> Update(ActivityDto dto)
         {
             var activity = await _context.Activities
-                .Include(x => x.FileToApis)
                 .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
             if (activity == null)
@@ -53,48 +58,45 @@ namespace VisualScheduleApp.ApplicationServices.Services
             activity.Description = dto.Description;
             activity.ModifiedAt = DateTime.Now;
 
-            _fileServices.FilesToApi(dto, activity);
+            if (dto.Files != null && dto.Files.Count > 0)
+            {
+                if (!string.IsNullOrEmpty(activity.ImagePath))
+                {
+                    _fileServices.DeleteFile(activity.ImagePath);
+                }
+
+                activity.ImagePath = await _fileServices.UploadFile(dto.Files[0]);
+            }
 
             await _context.SaveChangesAsync();
-
             return activity;
         }
 
         public async Task<Activity?> DetailAsync(Guid id)
         {
-            var result = await _context.Activities
-                .Include(x => x.FileToApis)
+            return await _context.Activities
                 .FirstOrDefaultAsync(x => x.Id == id);
-
-            return result;
         }
 
         public async Task<Activity?> Delete(Guid id)
         {
-            var result = await _context.Activities
+            var activity = await _context.Activities
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (result == null)
+            if (activity == null)
             {
                 return null;
             }
 
-            var images = await _context.FileToApis
-                .Where(x => x.ActivityId == id)
-                .Select(y => new FileToApiDto
-                {
-                    Id = y.Id,
-                    ActivityId = y.ActivityId,
-                    FilePath = y.FilePath
-                })
-                .ToArrayAsync();
+            if (!string.IsNullOrEmpty(activity.ImagePath))
+            {
+                _fileServices.DeleteFile(activity.ImagePath);
+            }
 
-            await _fileServices.RemoveImagesFromApi(images);
-
-            _context.Activities.Remove(result);
+            _context.Activities.Remove(activity);
             await _context.SaveChangesAsync();
 
-            return result;
+            return activity;
         }
     }
 }

@@ -1,12 +1,12 @@
-﻿using VisualScheduleApp.Core.Domain;
+﻿using Microsoft.AspNetCore.Http;
+using VisualScheduleApp.Core.Domain;
 using VisualScheduleApp.Core.Dto;
 
 namespace VisualScheduleApp.Core.ServiceInterface
 {
     public interface IFileServices
     {
-        void FilesToApi(ActivityDto dto, Activity activity);
-        Task<FileToApi?> RemoveImageFromApi(FileToApiDto dto);
-        Task RemoveImagesFromApi(FileToApiDto[] dtos);
+        Task<string> UploadFile(IFormFile file);
+        void DeleteFile(string filePath);
     }
 }

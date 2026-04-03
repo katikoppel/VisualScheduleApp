@@ -12,6 +12,5 @@ namespace VisualScheduleApp.Data
 
         public DbSet<Child> Children { get; set; }
         public DbSet<Activity> Activities { get; set; }
-        public DbSet<FileToApi> FileToApis { get; set; }
     }
 }

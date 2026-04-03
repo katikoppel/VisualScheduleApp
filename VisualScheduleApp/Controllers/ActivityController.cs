@@ -31,6 +31,7 @@ namespace VisualScheduleApp.Controllers
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
+                    ImagePath = x.ImagePath,
                     CreatedAt = x.CreatedAt,
                     ModifiedAt = x.ModifiedAt
                 })
@@ -56,21 +57,10 @@ namespace VisualScheduleApp.Controllers
                 Description = vm.Description,
                 CreatedAt = vm.CreatedAt,
                 ModifiedAt = vm.ModifiedAt,
-                Files = vm.Files,
-                FileToApiDtos = vm.Image.Select(x => new FileToApiDto
-                {
-                    Id = x.ImageId,
-                    ActivityId = x.ActivityId,
-                    FilePath = x.FilePath
-                }).ToArray()
+                Files = vm.Files
             };
 
-            var result = await _activityServices.Create(dto);
-
-            if (result == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            await _activityServices.Create(dto);
 
             return RedirectToAction(nameof(Index));
         }
@@ -85,25 +75,15 @@ namespace VisualScheduleApp.Controllers
                 return NotFound();
             }
 
-            var images = await _context.FileToApis
-                .Where(x => x.ActivityId == id)
-                .Select(y => new ImageViewModel
-                {
-                    ImageId = y.Id,
-                    ActivityId = y.ActivityId,
-                    FilePath = y.FilePath
-                }).ToArrayAsync();
-
             var vm = new ActivityViewModel
             {
                 Id = activity.Id,
                 Name = activity.Name,
                 Description = activity.Description,
+                ImagePath = activity.ImagePath,
                 CreatedAt = activity.CreatedAt,
                 ModifiedAt = activity.ModifiedAt
             };
-
-            vm.Image.AddRange(images);
 
             return View("CreateUpdate", vm);
         }
@@ -118,21 +98,10 @@ namespace VisualScheduleApp.Controllers
                 Description = vm.Description,
                 CreatedAt = vm.CreatedAt,
                 ModifiedAt = vm.ModifiedAt,
-                Files = vm.Files,
-                FileToApiDtos = vm.Image.Select(x => new FileToApiDto
-                {
-                    Id = x.ImageId,
-                    ActivityId = x.ActivityId,
-                    FilePath = x.FilePath
-                }).ToArray()
+                Files = vm.Files
             };
 
-            var result = await _activityServices.Update(dto);
-
-            if (result == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            await _activityServices.Update(dto);
 
             return RedirectToAction(nameof(Index));
         }
@@ -147,25 +116,15 @@ namespace VisualScheduleApp.Controllers
                 return NotFound();
             }
 
-            var images = await _context.FileToApis
-                .Where(x => x.ActivityId == id)
-                .Select(y => new ImageViewModel
-                {
-                    ImageId = y.Id,
-                    ActivityId = y.ActivityId,
-                    FilePath = y.FilePath
-                }).ToArrayAsync();
-
             var vm = new ActivityViewModel
             {
                 Id = activity.Id,
                 Name = activity.Name,
                 Description = activity.Description,
+                ImagePath = activity.ImagePath,
                 CreatedAt = activity.CreatedAt,
                 ModifiedAt = activity.ModifiedAt
             };
-
-            vm.Image.AddRange(images);
 
             return View(vm);
         }
@@ -193,40 +152,17 @@ namespace VisualScheduleApp.Controllers
                 return NotFound();
             }
 
-            var images = await _context.FileToApis
-                .Where(x => x.ActivityId == id)
-                .Select(y => new ImageViewModel
-                {
-                    ImageId = y.Id,
-                    ActivityId = y.ActivityId,
-                    FilePath = y.FilePath
-                }).ToArrayAsync();
-
             var vm = new ActivityViewModel
             {
                 Id = activity.Id,
                 Name = activity.Name,
                 Description = activity.Description,
+                ImagePath = activity.ImagePath,
                 CreatedAt = activity.CreatedAt,
                 ModifiedAt = activity.ModifiedAt
             };
 
-            vm.Image.AddRange(images);
-
             return View(vm);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RemoveImage(Guid imageId, Guid activityId)
-        {
-            var dto = new FileToApiDto()
-            {
-                Id = imageId
-            };
-
-            var image = await _fileServices.RemoveImageFromApi(dto);
-
-            return RedirectToAction(nameof(Update), new { id = activityId });
         }
     }
 }
