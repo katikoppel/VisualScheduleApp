@@ -9,6 +9,6 @@ namespace VisualScheduleApp.Core.Domain
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
 
-        //public Guid UserId { get; set; }
+        public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
     }
 }
