@@ -14,6 +14,8 @@ builder.Services.AddDbContext<VisualScheduleAppContext>(options =>
 builder.Services.AddScoped<IChildServices, ChildServices>();
 builder.Services.AddScoped<IActivityServices, ActivityServices>();  
 builder.Services.AddScoped<IFileServices, FileServices>();
+builder.Services.AddScoped<IScheduleServices, ScheduleServices>();
+builder.Services.AddScoped<IScheduleItemServices, ScheduleItemServices>();
 
 var app = builder.Build();
 
