@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace VisualScheduleApp.Core.Domain
+﻿namespace VisualScheduleApp.Core.Domain
 {
     public class Schedule
     {

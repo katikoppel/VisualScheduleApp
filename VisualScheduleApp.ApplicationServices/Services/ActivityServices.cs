@@ -21,7 +21,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             _fileServices = fileServices;
         }
 
-        public async Task<Activity?> Create(ActivityDto dto)
+        public async Task<Activity> Create(ActivityDto dto)
         {
             Activity activity = new Activity
             {
