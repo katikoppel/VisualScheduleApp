@@ -1,10 +1,10 @@
 ﻿@model VisualScheduleApp.Models.Children.ChildViewModel
 
 @{
-    ViewData["Title"] = "Child Details";
+    ViewData["Title"] = "Lapse detailne info";
 }
 
-<h1>Child Details</h1>
+<h1>Lapse detailne info</h1>
 
 <div class="card">
     <div class="card-body">
@@ -12,23 +12,23 @@
         <hr />
 
         <dl class="row">
-            <dt class="col-sm-3">Name</dt>
+            <dt class="col-sm-3">Nimi</dt>
             <dd class="col-sm-9">@Model.Name</dd>
 
-            <dt class="col-sm-3">Birth Date</dt>
+            <dt class="col-sm-3">Sünniaeg</dt>
             <dd class="col-sm-9">@Model.BirthDate.ToShortDateString()</dd>
 
-            <dt class="col-sm-3">Age</dt>
+            <dt class="col-sm-3">Vanus</dt>
             <dd class="col-sm-9">@Model.Age</dd>
 
-            <dt class="col-sm-3">Created At</dt>
+            <dt class="col-sm-3">Loodud</dt>
             <dd class="col-sm-9">@Model.CreatedAt</dd>
 
-            <dt class="col-sm-3">Modified At</dt>
+            <dt class="col-sm-3">Muudetud</dt>
             <dd class="col-sm-9">@Model.ModifiedAt</dd>
         </dl>
 
-        <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-success">Update</a>
-        <a asp-action="Index" class="btn btn-danger">Back</a>
+        <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-success">Uuenda</a>
+        <a asp-action="Index" class="btn btn-danger">Tagasi</a>
     </div>
 </div>

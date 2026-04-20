@@ -4,18 +4,18 @@
     ViewData["Title"] = "Children";
 }
 
-<h1>Children</h1>
+<h1>Lapsed</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create</a>
+    <a asp-action="Create" class="btn btn-primary">Lisa uus</a>
 </p>
 
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Birth Date</th>
-            <th>Age</th>
+            <th>Nimi</th>
+            <th>Sünniaeg</th>
+            <th>Vanus</th>
         </tr>
     </thead>
     <tbody>
@@ -26,9 +26,9 @@
                 <td>@child.BirthDate.ToShortDateString()</td>
                 <td>@child.Age</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@child.Id" class="btn btn-success btn-sm">Details</a>
-                    <a asp-action="Update" asp-route-id="@child.Id" class="btn btn-primary btn-sm">Update</a>
-                    <a asp-action="Delete" asp-route-id="@child.Id" class="btn btn-danger btn-sm">Delete</a>
+                    <a asp-action="Details" asp-route-id="@child.Id" class="btn btn-success btn-sm">Detailid</a>
+                    <a asp-action="Update" asp-route-id="@child.Id" class="btn btn-primary btn-sm">Uuenda</a>
+                    <a asp-action="Delete" asp-route-id="@child.Id" class="btn btn-danger btn-sm">Kustuta</a>
                 </td>
             </tr>
         }
