@@ -1,4 +1,5 @@
-﻿using VisualScheduleApp.Core.Domain;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using VisualScheduleApp.Core.Domain;
 
 namespace VisualScheduleApp.Models.ScheduleItems
 {
@@ -6,6 +7,7 @@ namespace VisualScheduleApp.Models.ScheduleItems
     {
         public Guid Id { get; set; }
         public int OrderIndex { get; set; }
+        public TimeSpan? Time { get; set; }
         public bool IsCompleted { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
@@ -16,5 +18,8 @@ namespace VisualScheduleApp.Models.ScheduleItems
         public string? ActivityName { get; set; }
         public string? ActivityDescription { get; set; }
         public string? ActivityImagePath { get; set; }
+
+        public IEnumerable<SelectListItem>? Activities { get; set; }
+        public IEnumerable<SelectListItem>? Schedules { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using VisualScheduleApp.Core.Domain;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using VisualScheduleApp.Core.Domain;
+using VisualScheduleApp.Models.ScheduleItems;
 
 namespace VisualScheduleApp.Models.Schedules
 {
@@ -12,5 +14,9 @@ namespace VisualScheduleApp.Models.Schedules
 
         public Guid ChildId { get; set; }
         public string? ChildName { get; set; }
+
+        public IEnumerable<SelectListItem>? Children { get; set; }
+
+        public List<ScheduleItemViewModel>? ScheduleItems { get; set; }
     }
 }
