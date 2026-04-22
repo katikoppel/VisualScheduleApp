@@ -43,13 +43,32 @@ namespace VisualScheduleApp.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ScheduleViewModel result = new();
+            ScheduleViewModel result = new()
+            {
+                Children = _context.Children.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                }).ToList()
+            };
+
             return View("CreateUpdate", result);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(ScheduleViewModel vm)
         {
+            if (!ModelState.IsValid)
+            {
+                vm.Children = _context.Children.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                }).ToList();
+
+                return View("CreateUpdate", vm);
+            }
+
             var dto = new ScheduleDto
             {
                 Id = vm.Id,
@@ -82,7 +101,12 @@ namespace VisualScheduleApp.Controllers
                 Date = schedule.Date,
                 ChildId = schedule.ChildId,
                 CreatedAt = schedule.CreatedAt,
-                ModifiedAt = schedule.ModifiedAt
+                ModifiedAt = schedule.ModifiedAt,
+                Children = _context.Children.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                }).ToList()
             };
 
             return View("CreateUpdate", vm);
@@ -91,6 +115,17 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ScheduleViewModel vm)
         {
+            if (!ModelState.IsValid)
+            {
+                vm.Children = _context.Children.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                }).ToList();
+
+                return View("CreateUpdate", vm);
+            }
+
             var dto = new ScheduleDto
             {
                 Id = vm.Id,
@@ -140,12 +175,33 @@ namespace VisualScheduleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var schedule = await _scheduleServices.GetByIdAsync(id);
+            var schedule = await _context.Schedules
+                .Include(x => x.Child)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (schedule == null)
             {
                 return NotFound();
             }
+
+            var scheduleItems = await _context.ScheduleItems
+                .Include(x => x.Activity)
+                .Where(x => x.ScheduleId == id)
+                .OrderBy(x => x.OrderIndex)
+                .Select(x => new VisualScheduleApp.Models.ScheduleItems.ScheduleItemViewModel
+                {
+                    Id = x.Id,
+                    OrderIndex = x.OrderIndex,
+                    IsCompleted = x.IsCompleted,
+                    CreatedAt = x.CreatedAt,
+                    ModifiedAt = x.ModifiedAt,
+                    ScheduleId = x.ScheduleId,
+                    ActivityId = x.ActivityId,
+                    ActivityName = x.Activity != null ? x.Activity.Name : null,
+                    ActivityDescription = x.Activity != null ? x.Activity.Description : null,
+                    ActivityImagePath = x.Activity != null ? x.Activity.ImagePath : null
+                })
+                .ToListAsync();
 
             var vm = new ScheduleViewModel
             {
@@ -153,8 +209,10 @@ namespace VisualScheduleApp.Controllers
                 Name = schedule.Name,
                 Date = schedule.Date,
                 ChildId = schedule.ChildId,
+                ChildName = schedule.Child != null ? schedule.Child.Name : null,
                 CreatedAt = schedule.CreatedAt,
-                ModifiedAt = schedule.ModifiedAt
+                ModifiedAt = schedule.ModifiedAt,
+                ScheduleItems = scheduleItems
             };
 
             return View(vm);

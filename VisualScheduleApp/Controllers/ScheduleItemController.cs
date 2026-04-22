@@ -49,7 +49,12 @@ namespace VisualScheduleApp.Controllers
         {
             var result = new ScheduleItemViewModel
             {
-                ScheduleId = scheduleId
+                ScheduleId = scheduleId,
+                Activities = _context.Activities.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                }).ToList()
             };
 
             return View("CreateUpdate", result);
@@ -58,11 +63,22 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ScheduleItemViewModel vm)
         {
+            if (!ModelState.IsValid)
+            {
+                vm.Activities = _context.Activities.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                }).ToList();
+
+                return View("CreateUpdate", vm);
+            }
+
             var dto = new ScheduleItemDto
             {
                 Id = vm.Id,
                 OrderIndex = vm.OrderIndex,
-                IsCompleted = vm.IsCompleted,
+                IsCompleted = false,
                 CreatedAt = vm.CreatedAt,
                 ModifiedAt = vm.ModifiedAt,
                 ScheduleId = vm.ScheduleId,
@@ -98,7 +114,12 @@ namespace VisualScheduleApp.Controllers
                 ActivityId = scheduleItem.ActivityId,
                 ActivityName = scheduleItem.ActivityName,
                 ActivityDescription = scheduleItem.ActivityDescription,
-                ActivityImagePath = scheduleItem.ActivityImagePath
+                ActivityImagePath = scheduleItem.ActivityImagePath,
+                Activities = _context.Activities.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                }).ToList()
             };
 
             return View("CreateUpdate", vm);
@@ -107,6 +128,17 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ScheduleItemViewModel vm)
         {
+            if (!ModelState.IsValid)
+            {
+                vm.Activities = _context.Activities.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Name
+                }).ToList();
+
+                return View("CreateUpdate", vm);
+            }
+
             var dto = new ScheduleItemDto
             {
                 Id = vm.Id,
@@ -185,6 +217,23 @@ namespace VisualScheduleApp.Controllers
             };
 
             return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CompletionToggle(Guid id)
+        {
+            var item = await _scheduleItemServices.GetByIdAsync(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            item.IsCompleted = !item.IsCompleted;
+
+            await _scheduleItemServices.UpdateAsync(item);
+
+            return RedirectToAction("Details", "Schedule", new { id = item.ScheduleId });
         }
     }
 }
