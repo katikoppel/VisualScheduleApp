@@ -1,0 +1,97 @@
+﻿@model VisualScheduleApp.Models.Schedules.ScheduleViewModel
+
+@{
+    ViewData["Title"] = "Päevaplaan";
+}
+
+<h1>Päevaplaan</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Nimi</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Kuupäev</dt>
+        <dd class="col-sm-10">@Model.Date.ToString("dd.MM.yyyy")</dd>
+
+        <dt class="col-sm-2">Laps</dt>
+        <dd class="col-sm-10">@Model.ChildName</dd>
+    </dl>
+</div>
+
+<div class="mt-4 d-flex gap-2 mb-4">
+    <a asp-controller="ScheduleItem" asp-action="Create" asp-route-scheduleId="@Model.Id" class="btn btn-primary">
+        Lisa tegevus
+    </a>
+    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-warning">
+        Uuenda päevaplaani
+    </a>
+    <a asp-action="Index" class="btn btn-success">
+        Tagasi
+    </a>
+</div>
+
+@if (Model.ScheduleItems != null && Model.ScheduleItems.Any())
+{
+    <div class="row">
+        @foreach (var item in Model.ScheduleItems)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 @(item.IsCompleted ? "border-success" : "")">
+                    @if (!string.IsNullOrEmpty(item.ActivityImagePath))
+                    {
+                        <img src="@item.ActivityImagePath" class="card-img-top" style="height:200px; object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <img src="/images/noimage.png" class="card-img-top" style="height:200px; object-fit:cover;" />
+                    }
+
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @if (item.Time != null)
+                            {
+                                @item.Time.Value.ToString(@"hh\:mm")
+                                <span class="me-2"></span>
+                            }
+                            @item.ActivityName
+                        </h5>
+
+                        <p class="card-text">@item.ActivityDescription</p>
+
+                            <form asp-controller="ScheduleItem" asp-action="CompletionToggle" method="post" class="mb-3">
+                                <input type="hidden" name="id" value="@item.Id" />
+
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           onchange="this.form.submit()"
+                                           @(item.IsCompleted ? "checked" : null) />
+                                    <label class="form-check-label">
+                                        Tehtud
+                                    </label>
+                                </div>
+                            </form>
+
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a asp-controller="ScheduleItem" asp-action="Details" asp-route-id="@item.Id" class="btn btn-success btn-sm">
+                                    Detailid
+                                </a>
+                                <a asp-controller="ScheduleItem" asp-action="Update" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
+                                    Uuenda
+                                </a>
+                                <a asp-controller="ScheduleItem" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
+                                    Kustuta
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        }
+    </div>
+}
+else
+{
+    <p>Selles päevaplaanis ei ole veel tegevusi.</p>
+}

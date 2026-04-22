@@ -1,0 +1,38 @@
+﻿@model IEnumerable<VisualScheduleApp.Models.Schedules.ScheduleViewModel>
+
+@{
+    ViewData["Title"] = "Päevaplaanid";
+}
+
+<h1>Päevaplaanid</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Loo uus</a>
+</p>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Nimi</th>
+            <th>Kuupäev</th>
+            <th>Laps</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var schedule in Model)
+        {
+            <tr>
+                <td>@schedule.Name</td>
+                <td>@schedule.Date.ToString("dd.MM.yyyy")</td>
+                <td>@schedule.ChildName</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@schedule.Id" class="btn btn-success btn-sm">Detailid</a>
+                    <a asp-action="Update" asp-route-id="@schedule.Id" class="btn btn-primary btn-sm">Uuenda</a>
+                    <a asp-action="Delete" asp-route-id="@schedule.Id" class="btn btn-danger btn-sm">Kustuta</a>
+                    <a asp-controller="ScheduleItem" asp-action="Index" asp-route-scheduleId="@schedule.Id" class="btn btn-warning btn-sm">Tegevused</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

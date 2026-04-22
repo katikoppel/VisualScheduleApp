@@ -1,0 +1,35 @@
+﻿@model VisualScheduleApp.Models.Schedules.ScheduleViewModel
+
+@{
+    ViewData["Title"] = "Kustuta päevaplaan";
+}
+
+<h1>Kustuta päevaplaan</h1>
+
+<h3>Kas oled kindel, et soovid selle päevaplaani kustutada?</h3>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Nimi</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">Kuupäev</dt>
+        <dd class="col-sm-10">@Model.Date.ToString("dd.MM.yyyy")</dd>
+
+        <dt class="col-sm-2">Lapse ID</dt>
+        <dd class="col-sm-10">@Model.ChildId</dd>
+
+        @if (!string.IsNullOrEmpty(Model.ChildName))
+        {
+            <dt class="col-sm-2">Lapse nimi</dt>
+            <dd class="col-sm-10">@Model.ChildName</dd>
+        }
+    </dl>
+
+    <form asp-action="DeleteConfirmation" method="post">
+        <input asp-for="Id" type="hidden" />
+        <button type="submit" class="btn btn-danger">Kustuta</button>
+        <a asp-action="Index" class="btn btn-success">Tagasi</a>
+    </form>
+</div>
