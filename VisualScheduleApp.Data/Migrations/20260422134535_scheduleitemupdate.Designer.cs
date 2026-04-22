@@ -12,8 +12,8 @@ using VisualScheduleApp.Data;
 namespace VisualScheduleApp.Data.Migrations
 {
     [DbContext(typeof(VisualScheduleAppContext))]
-    [Migration("20260406175320_ScheduleAndScheduleItem")]
-    partial class ScheduleAndScheduleItem
+    [Migration("20260422134535_scheduleitemupdate")]
+    partial class scheduleitemupdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,6 +125,9 @@ namespace VisualScheduleApp.Data.Migrations
 
                     b.Property<Guid>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeSpan?>("Time")
+                        .HasColumnType("time");
 
                     b.HasKey("Id");
 
