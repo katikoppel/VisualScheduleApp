@@ -123,14 +123,18 @@ namespace VisualScheduleApp.Data.Migrations
                     b.Property<Guid>("ScheduleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeSpan?>("Time")
+                    b.Property<TimeSpan>("Time")
                         .HasColumnType("time");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ActivityId");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasIndex("ScheduleId", "OrderIndex")
+                        .IsUnique();
+
+                    b.HasIndex("ScheduleId", "Time")
+                        .IsUnique();
 
                     b.ToTable("ScheduleItems");
                 });

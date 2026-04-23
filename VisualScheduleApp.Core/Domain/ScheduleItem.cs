@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
         public int OrderIndex { get; set; }
-        public TimeSpan? Time { get; set; }
+        public TimeSpan Time { get; set; }
         public bool IsCompleted { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }

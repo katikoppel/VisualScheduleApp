@@ -15,5 +15,18 @@ namespace VisualScheduleApp.Data
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<ScheduleItem> ScheduleItems { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ScheduleItem>()
+                .HasIndex(x => new { x.ScheduleId, x.OrderIndex })
+                .IsUnique();
+
+            modelBuilder.Entity<ScheduleItem>()
+                .HasIndex(x => new { x.ScheduleId, x.Time })
+                .IsUnique();
+        }
+
     }
 }
