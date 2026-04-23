@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using VisualScheduleApp.Core.Domain;
 
 namespace VisualScheduleApp.Data
 {
-    public class VisualScheduleAppContext : DbContext
+    public class VisualScheduleAppContext : IdentityDbContext<ApplicationUser>
     {
         public VisualScheduleAppContext(DbContextOptions<VisualScheduleAppContext> options)
             : base(options)
@@ -27,6 +28,5 @@ namespace VisualScheduleApp.Data
                 .HasIndex(x => new { x.ScheduleId, x.Time })
                 .IsUnique();
         }
-
     }
 }
