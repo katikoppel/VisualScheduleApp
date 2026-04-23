@@ -1,0 +1,66 @@
+﻿@model VisualScheduleApp.Models.ScheduleItems.ScheduleItemViewModel
+
+@if (Model.Id != Guid.Empty)
+{
+    <h1>Uuenda</h1>
+}
+else
+{
+    <h1>Loo uus</h1>
+}
+
+<div>
+    <form method="post">
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="CreatedAt" type="hidden" />
+        <input asp-for="ModifiedAt" type="hidden" />
+        <input asp-for="ScheduleId" type="hidden" />
+
+        <div class="form-group row">
+            <label asp-for="OrderIndex" class="col-sm-2 col-form-label">Järjekord</label>
+            <div class="col-sm-10">
+                <input asp-for="OrderIndex" class="form-control" />
+                <span asp-validation-for="OrderIndex" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row mt-3">
+            <label asp-for="Time" class="col-sm-2 col-form-label">Kellaaeg</label>
+            <div class="col-sm-10">
+                <input asp-for="Time" type="time" class="form-control" />
+                <span asp-validation-for="Time" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row mt-3">
+            <label asp-for="ActivityId" class="col-sm-2 col-form-label">Tegevus</label>
+            <div class="col-sm-10">
+                <select asp-for="ActivityId" asp-items="Model.Activities" class="form-control">
+                    <option value="">Vali tegevus</option>
+                </select>
+                <span asp-validation-for="ActivityId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            @if (Model.Id != Guid.Empty)
+            {
+                <button asp-action="Update" asp-controller="ScheduleItem" type="submit" class="btn btn-primary">
+                    Uuenda
+                </button>
+            }
+            else
+            {
+                <button asp-action="Create" asp-controller="ScheduleItem" type="submit" class="btn btn-primary">
+                    Loo uus
+                </button>
+            }
+
+            <a asp-action="Details" asp-controller="Schedule" asp-route-id="@Model.ScheduleId" class="btn btn-success">
+                Tagasi
+            </a>
+        </div>
+    </form>
+</div>

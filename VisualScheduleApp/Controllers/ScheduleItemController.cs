@@ -22,29 +22,6 @@ namespace VisualScheduleApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(Guid scheduleId)
-        {
-            var scheduleItems = await _scheduleItemServices.GetAllByScheduleIdAsync(scheduleId);
-
-            var result = scheduleItems.Select(x => new ScheduleItemViewModel
-            {
-                Id = x.Id,
-                OrderIndex = x.OrderIndex,
-                IsCompleted = x.IsCompleted,
-                CreatedAt = x.CreatedAt,
-                ModifiedAt = x.ModifiedAt,
-                ScheduleId = x.ScheduleId,
-                ActivityId = x.ActivityId,
-                ActivityName = x.ActivityName,
-                ActivityDescription = x.ActivityDescription,
-                ActivityImagePath = x.ActivityImagePath
-            }).ToList();
-
-            ViewBag.ScheduleId = scheduleId;
-            return View(result);
-        }
-
-        [HttpGet]
         public IActionResult Create(Guid scheduleId)
         {
             var result = new ScheduleItemViewModel
@@ -63,6 +40,16 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ScheduleItemViewModel vm)
         {
+            if (_context.ScheduleItems.Any(x => x.ScheduleId == vm.ScheduleId && x.OrderIndex == vm.OrderIndex))
+            {
+                ModelState.AddModelError(nameof(vm.OrderIndex), "See järjekorranumber on juba kasutusel!");
+            }
+
+            if (_context.ScheduleItems.Any(x => x.ScheduleId == vm.ScheduleId && x.Time == vm.Time))
+            {
+                ModelState.AddModelError(nameof(vm.Time), "See kellaaeg on juba kasutusel!");
+            }
+
             if (!ModelState.IsValid)
             {
                 vm.Activities = _context.Activities.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
@@ -78,6 +65,7 @@ namespace VisualScheduleApp.Controllers
             {
                 Id = vm.Id,
                 OrderIndex = vm.OrderIndex,
+                Time = vm.Time,
                 IsCompleted = false,
                 CreatedAt = vm.CreatedAt,
                 ModifiedAt = vm.ModifiedAt,
@@ -90,7 +78,7 @@ namespace VisualScheduleApp.Controllers
 
             await _scheduleItemServices.CreateAsync(dto);
 
-            return RedirectToAction(nameof(Index), new { scheduleId = vm.ScheduleId });
+            return RedirectToAction("Details", "Schedule", new { id = vm.ScheduleId });
         }
 
         [HttpGet]
@@ -107,6 +95,7 @@ namespace VisualScheduleApp.Controllers
             {
                 Id = scheduleItem.Id,
                 OrderIndex = scheduleItem.OrderIndex,
+                Time = scheduleItem.Time,
                 IsCompleted = scheduleItem.IsCompleted,
                 CreatedAt = scheduleItem.CreatedAt,
                 ModifiedAt = scheduleItem.ModifiedAt,
@@ -128,6 +117,16 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ScheduleItemViewModel vm)
         {
+            if (_context.ScheduleItems.Any(x => x.ScheduleId == vm.ScheduleId && x.OrderIndex == vm.OrderIndex && x.Id != vm.Id))
+            {
+                ModelState.AddModelError(nameof(vm.OrderIndex), "See järjekorranumber on juba kasutusel!");
+            }
+
+            if (_context.ScheduleItems.Any(x => x.ScheduleId == vm.ScheduleId && x.Time == vm.Time && x.Id != vm.Id))
+            {
+                ModelState.AddModelError(nameof(vm.Time), "See kellaaeg on juba kasutusel!");
+            }
+
             if (!ModelState.IsValid)
             {
                 vm.Activities = _context.Activities.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
@@ -143,6 +142,7 @@ namespace VisualScheduleApp.Controllers
             {
                 Id = vm.Id,
                 OrderIndex = vm.OrderIndex,
+                Time = vm.Time,
                 IsCompleted = vm.IsCompleted,
                 CreatedAt = vm.CreatedAt,
                 ModifiedAt = vm.ModifiedAt,
@@ -155,7 +155,7 @@ namespace VisualScheduleApp.Controllers
 
             await _scheduleItemServices.UpdateAsync(dto);
 
-            return RedirectToAction(nameof(Index), new { scheduleId = vm.ScheduleId });
+            return RedirectToAction("Details", "Schedule", new { id = vm.ScheduleId });
         }
 
         [HttpGet]
@@ -172,6 +172,7 @@ namespace VisualScheduleApp.Controllers
             {
                 Id = scheduleItem.Id,
                 OrderIndex = scheduleItem.OrderIndex,
+                Time = scheduleItem.Time,
                 IsCompleted = scheduleItem.IsCompleted,
                 CreatedAt = scheduleItem.CreatedAt,
                 ModifiedAt = scheduleItem.ModifiedAt,
@@ -182,14 +183,16 @@ namespace VisualScheduleApp.Controllers
                 ActivityImagePath = scheduleItem.ActivityImagePath
             };
 
+            ViewBag.ScheduleId = scheduleItem.ScheduleId;
+
             return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteConfirmation(Guid id, Guid scheduleId)
+        public async Task<IActionResult> Delete(Guid id, Guid scheduleId)
         {
             await _scheduleItemServices.DeleteAsync(id);
-            return RedirectToAction(nameof(Index), new { scheduleId });
+            return RedirectToAction("Details", "Schedule", new { id = scheduleId });
         }
 
         [HttpGet]
@@ -206,6 +209,7 @@ namespace VisualScheduleApp.Controllers
             {
                 Id = scheduleItem.Id,
                 OrderIndex = scheduleItem.OrderIndex,
+                Time = scheduleItem.Time,
                 IsCompleted = scheduleItem.IsCompleted,
                 CreatedAt = scheduleItem.CreatedAt,
                 ModifiedAt = scheduleItem.ModifiedAt,

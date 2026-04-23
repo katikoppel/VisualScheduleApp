@@ -192,6 +192,7 @@ namespace VisualScheduleApp.Controllers
                 {
                     Id = x.Id,
                     OrderIndex = x.OrderIndex,
+                    Time = x.Time,
                     IsCompleted = x.IsCompleted,
                     CreatedAt = x.CreatedAt,
                     ModifiedAt = x.ModifiedAt,

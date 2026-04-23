@@ -1,0 +1,55 @@
+﻿@model VisualScheduleApp.Models.ScheduleItems.ScheduleItemViewModel
+
+@{
+    ViewData["Title"] = "Päevaplaani tegevus";
+}
+
+<h1>Päevaplaani tegevus</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Järjekord</dt>
+        <dd class="col-sm-10">@Model.OrderIndex</dd>
+
+        <dt class="col-sm-2">Tehtud</dt>
+        <dd class="col-sm-10">@(Model.IsCompleted ? "Jah" : "Ei")</dd>
+
+        <dt class="col-sm-2">Päevaplaani ID</dt>
+        <dd class="col-sm-10">@Model.ScheduleId</dd>
+
+        <dt class="col-sm-2">Tegevuse ID</dt>
+        <dd class="col-sm-10">@Model.ActivityId</dd>
+
+        @if (!string.IsNullOrEmpty(Model.ActivityName))
+        {
+            <dt class="col-sm-2">Tegevus</dt>
+            <dd class="col-sm-10">@Model.ActivityName</dd>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ActivityDescription))
+        {
+            <dt class="col-sm-2">Kirjeldus</dt>
+            <dd class="col-sm-10">@Model.ActivityDescription</dd>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ActivityImagePath))
+        {
+            <dt class="col-sm-2">Pilt</dt>
+            <dd class="col-sm-10">
+                <img src="@Model.ActivityImagePath" style="max-width:200px;" class="img-thumbnail" />
+            </dd>
+        }
+
+        <dt class="col-sm-2">Loodud</dt>
+        <dd class="col-sm-10">@Model.CreatedAt</dd>
+
+        <dt class="col-sm-2">Muudetud</dt>
+        <dd class="col-sm-10">@Model.ModifiedAt</dd>
+    </dl>
+</div>
+
+<div class="mt-4 d-flex gap-2">
+    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-primary">Uuenda</a>
+    <a asp-action="Index" asp-route-scheduleId="@Model.ScheduleId" class="btn btn-success">Tagasi</a>
+</div>

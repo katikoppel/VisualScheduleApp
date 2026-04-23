@@ -4,94 +4,130 @@
     ViewData["Title"] = "Päevaplaan";
 }
 
-<h1>Päevaplaan</h1>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Päevaplaan</h1>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Nimi</dt>
-        <dd class="col-sm-10">@Model.Name</dd>
+        <div class="d-flex gap-2">
+            <a asp-controller="ScheduleItem" asp-action="Create" asp-route-scheduleId="@Model.Id" class="btn btn-primary">
+                Lisa tegevus
+            </a>
 
-        <dt class="col-sm-2">Kuupäev</dt>
-        <dd class="col-sm-10">@Model.Date.ToString("dd.MM.yyyy")</dd>
+            <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-warning">
+                Uuenda päevaplaani
+            </a>
 
-        <dt class="col-sm-2">Laps</dt>
-        <dd class="col-sm-10">@Model.ChildName</dd>
-    </dl>
-</div>
+            <a asp-action="Index"
+               class="btn btn-success">
+                Tagasi
+            </a>
+        </div>
+    </div>
 
-<div class="mt-4 d-flex gap-2 mb-4">
-    <a asp-controller="ScheduleItem" asp-action="Create" asp-route-scheduleId="@Model.Id" class="btn btn-primary">
-        Lisa tegevus
-    </a>
-    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-warning">
-        Uuenda päevaplaani
-    </a>
-    <a asp-action="Index" class="btn btn-success">
-        Tagasi
-    </a>
-</div>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-2">Nimi</dt>
+                <dd class="col-sm-10">@Model.Name</dd>
 
-@if (Model.ScheduleItems != null && Model.ScheduleItems.Any())
-{
-    <div class="row">
-        @foreach (var item in Model.ScheduleItems)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 @(item.IsCompleted ? "border-success" : "")">
-                    @if (!string.IsNullOrEmpty(item.ActivityImagePath))
-                    {
-                        <img src="@item.ActivityImagePath" class="card-img-top" style="height:200px; object-fit:cover;" />
-                    }
-                    else
-                    {
-                        <img src="/images/noimage.png" class="card-img-top" style="height:200px; object-fit:cover;" />
-                    }
+                <dt class="col-sm-2">Kuupäev</dt>
+                <dd class="col-sm-10">@Model.Date.ToString("dd.MM.yyyy")</dd>
 
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            @if (item.Time != null)
+                <dt class="col-sm-2">Laps</dt>
+                <dd class="col-sm-10">@Model.ChildName</dd>
+            </dl>
+        </div>
+    </div>
+
+    <h3 class="mb-3">Tegevused</h3>
+
+    @if (Model.ScheduleItems != null && Model.ScheduleItems.Any())
+    {
+        <div class="row">
+            @foreach (var item in Model.ScheduleItems.OrderBy(x => x.OrderIndex))
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm @(item.IsCompleted ? "border-success" : "")">
+
+                        @if (!string.IsNullOrEmpty(item.ActivityImagePath))
+                        {
+                            <img src="@item.ActivityImagePath"
+                                 class="card-img-top"
+                                 alt="@item.ActivityName"
+                                 style="height:220px; object-fit:cover;" />
+                        }
+                        else
+                        {
+                            <img src="/images/noimage.png"
+                                 class="card-img-top"
+                                 alt="Pilt puudub"
+                                 style="height:220px; object-fit:cover;" />
+                        }
+
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">@item.ActivityName</h5>
+
+                                @if (item.IsCompleted)
+                                {
+                                    <span class="badge bg-success">Tehtud</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Tegemata</span>
+                                }
+                            </div>
+
+                            <p class="text-muted mb-2">
+                                <strong>Kellaaeg:</strong> @item.Time.ToString(@"hh\:mm")
+                            </p>
+
+                            @if (!string.IsNullOrWhiteSpace(item.ActivityDescription))
                             {
-                                @item.Time.Value.ToString(@"hh\:mm")
-                                <span class="me-2"></span>
+                                <p class="card-text">@item.ActivityDescription</p>
                             }
-                            @item.ActivityName
-                        </h5>
+                            else
+                            {
+                                <p class="card-text text-muted">Kirjeldus puudub.</p>
+                            }
 
-                        <p class="card-text">@item.ActivityDescription</p>
+                            <p class="mb-2">
+                                <strong>Järjekord:</strong> @item.OrderIndex
+                            </p>
 
-                            <form asp-controller="ScheduleItem" asp-action="CompletionToggle" method="post" class="mb-3">
-                                <input type="hidden" name="id" value="@item.Id" />
+                            <div class="mt-auto">
+                                <form asp-controller="ScheduleItem" asp-action="CompletionToggle" method="post" class="mb-3">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="hidden" name="scheduleId" value="@Model.Id" />
 
-                                <div class="form-check">
-                                    <input class="form-check-input"
-                                           type="checkbox"
-                                           onchange="this.form.submit()"
-                                           @(item.IsCompleted ? "checked" : null) />
-                                    <label class="form-check-label">
-                                        Tehtud
-                                    </label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" onchange="this.form.submit()" @(item.IsCompleted ? "checked" : null) />
+                                        <label class="form-check-label">
+                                            Märgi tehtuks
+                                        </label>
+                                    </div>
+                                </form>
+
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a asp-controller="ScheduleItem" asp-action="Update" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
+                                        Uuenda
+                                    </a>
+
+                                    <a asp-controller="ScheduleItem" asp-action="Delete" asp-route-id="@item.Id" asp-route-scheduleId="@Model.Id" class="btn btn-danger btn-sm">
+                                        Kustuta
+                                    </a>
                                 </div>
-                            </form>
-
-                            <div class="d-flex gap-2 flex-wrap">
-                                <a asp-controller="ScheduleItem" asp-action="Details" asp-route-id="@item.Id" class="btn btn-success btn-sm">
-                                    Detailid
-                                </a>
-                                <a asp-controller="ScheduleItem" asp-action="Update" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
-                                    Uuenda
-                                </a>
-                                <a asp-controller="ScheduleItem" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
-                                    Kustuta
-                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-        }
-    </div>
-}
-else
-{
-    <p>Selles päevaplaanis ei ole veel tegevusi.</p>
-}
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-light border">
+            Selles päevaplaanis ei ole veel tegevusi.
+        </div>
+    }
+</div>

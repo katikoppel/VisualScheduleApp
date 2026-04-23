@@ -1,0 +1,46 @@
+﻿@model VisualScheduleApp.Models.ScheduleItems.ScheduleItemViewModel
+
+@{
+    ViewData["Title"] = "Kustuta päevaplaani tegevus";
+}
+
+<h1>Kustuta</h1>
+
+<div class="alert alert-danger">
+    Kas oled kindel, et soovid selle tegevuse kustudada?
+</div>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Järjekord</dt>
+        <dd class="col-sm-10">@Model.OrderIndex</dd>
+
+        <dt class="col-sm-2">Tegevus</dt>
+        <dd class="col-sm-10">@Model.ActivityName</dd>
+
+        <dt class="col-sm-2">Kirjeldus</dt>
+        <dd class="col-sm-10">@Model.ActivityDescription</dd>
+
+        <dt class="col-sm-2">Tehtud</dt>
+        <dd class="col-sm-10">@(Model.IsCompleted ? "Jah" : "Ei")</dd>
+
+        @if (!string.IsNullOrEmpty(Model.ActivityImagePath))
+        {
+            <dt class="col-sm-2">Pilt</dt>
+            <dd class="col-sm-10">
+                <img src="@Model.ActivityImagePath" style="max-width:200px;" class="img-thumbnail" />
+            </dd>
+        }
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" name="scheduleId" value="@ViewBag.ScheduleId" />
+
+        <button type="submit" class="btn btn-danger">Kustuta</button>
+        <a asp-controller="Schedule" asp-action="Details" asp-route-id="@ViewBag.ScheduleId" class="btn btn-secondary">
+            Tagasi
+        </a>
+    </form>
+</div>

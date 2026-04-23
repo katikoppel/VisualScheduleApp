@@ -27,6 +27,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
                     ScheduleId = x.ScheduleId,
                     ActivityId = x.ActivityId,
                     OrderIndex = x.OrderIndex,
+                    Time = x.Time,
                     IsCompleted = x.IsCompleted,
                     CreatedAt = x.CreatedAt,
                     ModifiedAt = x.ModifiedAt,
@@ -54,6 +55,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
                 ScheduleId = item.ScheduleId,
                 ActivityId = item.ActivityId,
                 OrderIndex = item.OrderIndex,
+                Time = item.Time,
                 IsCompleted = item.IsCompleted,
                 CreatedAt = item.CreatedAt,
                 ModifiedAt = item.ModifiedAt,
@@ -71,6 +73,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
                 ScheduleId = dto.ScheduleId,
                 ActivityId = dto.ActivityId,
                 OrderIndex = dto.OrderIndex,
+                Time = dto.Time,
                 IsCompleted = dto.IsCompleted,
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now
@@ -106,6 +109,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             item.ScheduleId = dto.ScheduleId;
             item.ActivityId = dto.ActivityId;
             item.OrderIndex = dto.OrderIndex;
+            item.Time = dto.Time;
             item.IsCompleted = dto.IsCompleted;
             item.ModifiedAt = DateTime.Now;
 
