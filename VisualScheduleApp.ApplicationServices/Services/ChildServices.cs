@@ -24,6 +24,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             child.BirthDate = dto.BirthDate;
             child.CreatedAt = DateTime.Now;
             child.ModifiedAt = DateTime.Now;
+            child.UserId = dto.UserId;
 
             await _context.Children.AddAsync(child);
             await _context.SaveChangesAsync();
@@ -40,6 +41,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             child.BirthDate = dto.BirthDate;
             child.CreatedAt = dto.CreatedAt;
             child.ModifiedAt = DateTime.Now;
+            child.UserId = dto.UserId;
 
             _context.Children.Update(child);
             await _context.SaveChangesAsync();
