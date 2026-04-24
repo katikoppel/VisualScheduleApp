@@ -27,7 +27,8 @@ namespace VisualScheduleApp.ApplicationServices.Services
                     Date = x.Date,
                     Name = x.Name,
                     CreatedAt = x.CreatedAt,
-                    ModifiedAt = x.ModifiedAt
+                    ModifiedAt = x.ModifiedAt,
+                    UserId = x.UserId
                 })
                 .ToListAsync();
         }
@@ -51,7 +52,8 @@ namespace VisualScheduleApp.ApplicationServices.Services
                 Date = schedule.Date,
                 Name = schedule.Name,
                 CreatedAt = schedule.CreatedAt,
-                ModifiedAt = schedule.ModifiedAt
+                ModifiedAt = schedule.ModifiedAt,
+                UserId = schedule.UserId
             };
         }
 
@@ -64,7 +66,8 @@ namespace VisualScheduleApp.ApplicationServices.Services
                 Date = dto.Date,
                 Name = dto.Name,
                 CreatedAt = DateTime.Now,
-                ModifiedAt = DateTime.Now
+                ModifiedAt = DateTime.Now,
+                UserId = dto.UserId
             };
 
             _context.Schedules.Add(schedule);
@@ -73,6 +76,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             dto.Id = schedule.Id;
             dto.CreatedAt = schedule.CreatedAt;
             dto.ModifiedAt = schedule.ModifiedAt;
+            dto.UserId = schedule.UserId;
 
             return dto;
         }
@@ -90,12 +94,14 @@ namespace VisualScheduleApp.ApplicationServices.Services
             schedule.Date = dto.Date;
             schedule.Name = dto.Name;
             schedule.ModifiedAt = DateTime.Now;
+            schedule.UserId = dto.UserId;
 
             _context.Schedules.Update(schedule);
             await _context.SaveChangesAsync();
 
             dto.CreatedAt = schedule.CreatedAt;
             dto.ModifiedAt = schedule.ModifiedAt;
+            dto.UserId = schedule.UserId;
 
             return dto;
         }

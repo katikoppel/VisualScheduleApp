@@ -5,9 +5,12 @@ using VisualScheduleApp.Core.Dto;
 using VisualScheduleApp.Data;
 using VisualScheduleApp.Core.ServiceInterface;
 using VisualScheduleApp.Models.Schedules;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace VisualScheduleApp.Controllers
 {
+    [Authorize]
     public class ScheduleController : Controller
     {
         private readonly VisualScheduleAppContext _context;
@@ -23,8 +26,11 @@ namespace VisualScheduleApp.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var result = _context.Schedules
                 .Include(x => x.Child)
+                .Where(x => x.UserId == userId)
                 .Select(x => new ScheduleViewModel
                 {
                     Id = x.Id,
@@ -33,7 +39,8 @@ namespace VisualScheduleApp.Controllers
                     ChildId = x.ChildId,
                     ChildName = x.Child != null ? x.Child.Name : null,
                     CreatedAt = x.CreatedAt,
-                    ModifiedAt = x.ModifiedAt
+                    ModifiedAt = x.ModifiedAt,
+                    UserId = x.UserId
                 })
                 .ToList();
 
@@ -43,13 +50,17 @@ namespace VisualScheduleApp.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             ScheduleViewModel result = new()
             {
-                Children = _context.Children.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.Name
-                }).ToList()
+                Children = _context.Children
+                    .Where(x => x.UserId == userId)
+                    .Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name
+                    }).ToList()
             };
 
             return View("CreateUpdate", result);
@@ -58,13 +69,17 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ScheduleViewModel vm)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             if (!ModelState.IsValid)
             {
-                vm.Children = _context.Children.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.Name
-                }).ToList();
+                vm.Children = _context.Children
+                    .Where(x => x.UserId == userId)
+                    .Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name
+                    }).ToList();
 
                 return View("CreateUpdate", vm);
             }
@@ -76,7 +91,8 @@ namespace VisualScheduleApp.Controllers
                 Date = vm.Date,
                 ChildId = vm.ChildId,
                 CreatedAt = vm.CreatedAt,
-                ModifiedAt = vm.ModifiedAt
+                ModifiedAt = vm.ModifiedAt,
+                UserId = userId
             };
 
             await _scheduleServices.CreateAsync(dto);
@@ -87,9 +103,10 @@ namespace VisualScheduleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var schedule = await _scheduleServices.GetByIdAsync(id);
 
-            if (schedule == null)
+            if (schedule == null || schedule.UserId != userId)
             {
                 return NotFound();
             }
@@ -102,11 +119,14 @@ namespace VisualScheduleApp.Controllers
                 ChildId = schedule.ChildId,
                 CreatedAt = schedule.CreatedAt,
                 ModifiedAt = schedule.ModifiedAt,
-                Children = _context.Children.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.Name
-                }).ToList()
+                UserId = schedule.UserId,
+                Children = _context.Children
+                    .Where(x => x.UserId == userId)
+                    .Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name
+                    }).ToList()
             };
 
             return View("CreateUpdate", vm);
@@ -115,13 +135,23 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ScheduleViewModel vm)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var existingSchedule = await _scheduleServices.GetByIdAsync(vm.Id);
+
+            if (existingSchedule == null || existingSchedule.UserId != userId)
+            {
+                return NotFound();
+            }
+
             if (!ModelState.IsValid)
             {
-                vm.Children = _context.Children.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.Name
-                }).ToList();
+                vm.Children = _context.Children
+                    .Where(x => x.UserId == userId)
+                    .Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name
+                    }).ToList();
 
                 return View("CreateUpdate", vm);
             }
@@ -133,7 +163,8 @@ namespace VisualScheduleApp.Controllers
                 Date = vm.Date,
                 ChildId = vm.ChildId,
                 CreatedAt = vm.CreatedAt,
-                ModifiedAt = vm.ModifiedAt
+                ModifiedAt = vm.ModifiedAt,
+                UserId = userId
             };
 
             await _scheduleServices.UpdateAsync(dto);
@@ -144,9 +175,10 @@ namespace VisualScheduleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var schedule = await _scheduleServices.GetByIdAsync(id);
 
-            if (schedule == null)
+            if (schedule == null || schedule.UserId != userId)
             {
                 return NotFound();
             }
@@ -158,7 +190,8 @@ namespace VisualScheduleApp.Controllers
                 Date = schedule.Date,
                 ChildId = schedule.ChildId,
                 CreatedAt = schedule.CreatedAt,
-                ModifiedAt = schedule.ModifiedAt
+                ModifiedAt = schedule.ModifiedAt,
+                UserId = schedule.UserId
             };
 
             return View(vm);
@@ -167,6 +200,14 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmation(Guid id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var schedule = await _scheduleServices.GetByIdAsync(id);
+
+            if (schedule == null || schedule.UserId != userId)
+            {
+                return NotFound();
+            }
+
             await _scheduleServices.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
@@ -175,9 +216,11 @@ namespace VisualScheduleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var schedule = await _context.Schedules
                 .Include(x => x.Child)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
 
             if (schedule == null)
             {
@@ -213,6 +256,7 @@ namespace VisualScheduleApp.Controllers
                 ChildName = schedule.Child != null ? schedule.Child.Name : null,
                 CreatedAt = schedule.CreatedAt,
                 ModifiedAt = schedule.ModifiedAt,
+                UserId = schedule.UserId,
                 ScheduleItems = scheduleItems
             };
 

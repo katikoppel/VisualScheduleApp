@@ -12,5 +12,8 @@ namespace VisualScheduleApp.Core.Dto
 
         public Guid ChildId { get; set; }
         public string? ChildName { get; set; }
+
+        public string? UserId { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }

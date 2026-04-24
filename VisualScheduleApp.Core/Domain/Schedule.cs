@@ -11,6 +11,10 @@
         public Guid ChildId { get; set; }
         public Child? Child { get; set; }
 
+        public string? UserId { get; set; }
+        public ApplicationUser? User { get; set; }
+
+
         public ICollection<ScheduleItem> ScheduleItems { get; set; } = new List<ScheduleItem>();
     }
 }

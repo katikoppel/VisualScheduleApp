@@ -17,6 +17,9 @@ namespace VisualScheduleApp.Models.Schedules
 
         public IEnumerable<SelectListItem>? Children { get; set; }
 
+        public string? UserId { get; set; }
+        public ApplicationUser? User { get; set; }
+
         public List<ScheduleItemViewModel>? ScheduleItems { get; set; }
     }
 }
