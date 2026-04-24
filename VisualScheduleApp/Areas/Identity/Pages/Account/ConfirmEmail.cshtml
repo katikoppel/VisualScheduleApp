@@ -1,0 +1,27 @@
+﻿@page
+@model ConfirmEmailModel
+
+@{
+    ViewData["Title"] = "E-posti aadressi kinnitamine";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 rounded-4 text-center">
+            <div class="card-body p-4">
+                <i class="bi bi-check-circle display-4 text-success"></i>
+
+                <h2 class="mt-3">E-posti aadress kinnitatud</h2>
+
+                @if (!string.IsNullOrEmpty(Model.StatusMessage))
+                {
+                    <p class="text-muted mt-3">@Model.StatusMessage</p>
+                }
+
+                <a asp-page="./Login" class="btn btn-dark rounded-pill px-4 mt-3">
+                    Logi sisse
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

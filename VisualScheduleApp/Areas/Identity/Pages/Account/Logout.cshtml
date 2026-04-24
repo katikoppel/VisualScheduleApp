@@ -1,21 +1,40 @@
 ﻿@page
 @model LogoutModel
+
 @{
-    ViewData["Title"] = "Log out";
+    ViewData["Title"] = "Logi välja";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    @{
-        if (User.Identity?.IsAuthenticated ?? false)
-        {
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
-            </form>
-        }
-        else
-        {
-            <p>You have successfully logged out of the application.</p>
-        }
-    }
-</header>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 rounded-4 text-center">
+            <div class="card-body p-4">
+
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <h2 class="mb-3">Kas soovid välja logida?</h2>
+
+                    <form asp-area="Identity"
+                          asp-page="/Account/Logout"
+                          asp-route-returnUrl="@Url.Page("/", new { area = "" })"
+                          method="post">
+
+                        <button type="submit" class="btn btn-dark btn-lg rounded-pill px-4">
+                            <i class="bi bi-box-arrow-right me-1"></i> Logi välja
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <i class="bi bi-check-circle display-4 text-success"></i>
+                    <h3 class="mt-3">Oled välja logitud</h3>
+
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mt-3 rounded-pill px-3">
+                        Tagasi
+                    </a>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
