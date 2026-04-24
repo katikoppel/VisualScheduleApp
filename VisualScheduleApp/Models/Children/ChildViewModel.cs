@@ -7,6 +7,9 @@
         public DateTime BirthDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ModifiedAt { get; set; }
+
+        public string? UserId { get; set; }
+
         public int Age => DateTime.Today.Year - BirthDate.Year -
         (BirthDate.Date > DateTime.Today.AddYears(-(DateTime.Today.Year - BirthDate.Year)) ? 1 : 0);
     }
