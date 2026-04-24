@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using VisualScheduleApp.Core.Dto;
 using VisualScheduleApp.Core.ServiceInterface;
 using VisualScheduleApp.Data;
 using VisualScheduleApp.Models.ScheduleItems;
 
-
 namespace VisualScheduleApp.Controllers
 {
+    [Authorize]
     public class ScheduleItemController : Controller
     {
         private readonly VisualScheduleAppContext _context;
@@ -22,8 +24,18 @@ namespace VisualScheduleApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create(Guid scheduleId)
+        public async Task<IActionResult> Create(Guid scheduleId)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var schedule = await _context.Schedules
+                .FirstOrDefaultAsync(x => x.Id == scheduleId && x.UserId == userId);
+
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
             var result = new ScheduleItemViewModel
             {
                 ScheduleId = scheduleId,
@@ -40,6 +52,16 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ScheduleItemViewModel vm)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var schedule = await _context.Schedules
+                .FirstOrDefaultAsync(x => x.Id == vm.ScheduleId && x.UserId == userId);
+
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
             if (_context.ScheduleItems.Any(x => x.ScheduleId == vm.ScheduleId && x.OrderIndex == vm.OrderIndex))
             {
                 ModelState.AddModelError(nameof(vm.OrderIndex), "See järjekorranumber on juba kasutusel!");
@@ -84,9 +106,14 @@ namespace VisualScheduleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
-            var scheduleItem = await _scheduleItemServices.GetByIdAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (scheduleItem == null)
+            var scheduleItem = await _context.ScheduleItems
+                .Include(x => x.Schedule)
+                .Include(x => x.Activity)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (scheduleItem == null || scheduleItem.Schedule == null || scheduleItem.Schedule.UserId != userId)
             {
                 return NotFound();
             }
@@ -101,9 +128,9 @@ namespace VisualScheduleApp.Controllers
                 ModifiedAt = scheduleItem.ModifiedAt,
                 ScheduleId = scheduleItem.ScheduleId,
                 ActivityId = scheduleItem.ActivityId,
-                ActivityName = scheduleItem.ActivityName,
-                ActivityDescription = scheduleItem.ActivityDescription,
-                ActivityImagePath = scheduleItem.ActivityImagePath,
+                ActivityName = scheduleItem.Activity != null ? scheduleItem.Activity.Name : null,
+                ActivityDescription = scheduleItem.Activity != null ? scheduleItem.Activity.Description : null,
+                ActivityImagePath = scheduleItem.Activity != null ? scheduleItem.Activity.ImagePath : null,
                 Activities = _context.Activities.Select(x => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
                 {
                     Value = x.Id.ToString(),
@@ -117,6 +144,17 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ScheduleItemViewModel vm)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var existingItem = await _context.ScheduleItems
+                .Include(x => x.Schedule)
+                .FirstOrDefaultAsync(x => x.Id == vm.Id);
+
+            if (existingItem == null || existingItem.Schedule == null || existingItem.Schedule.UserId != userId)
+            {
+                return NotFound();
+            }
+
             if (_context.ScheduleItems.Any(x => x.ScheduleId == vm.ScheduleId && x.OrderIndex == vm.OrderIndex && x.Id != vm.Id))
             {
                 ModelState.AddModelError(nameof(vm.OrderIndex), "See järjekorranumber on juba kasutusel!");
@@ -161,9 +199,14 @@ namespace VisualScheduleApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var scheduleItem = await _scheduleItemServices.GetByIdAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (scheduleItem == null)
+            var scheduleItem = await _context.ScheduleItems
+                .Include(x => x.Schedule)
+                .Include(x => x.Activity)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (scheduleItem == null || scheduleItem.Schedule == null || scheduleItem.Schedule.UserId != userId)
             {
                 return NotFound();
             }
@@ -178,9 +221,9 @@ namespace VisualScheduleApp.Controllers
                 ModifiedAt = scheduleItem.ModifiedAt,
                 ScheduleId = scheduleItem.ScheduleId,
                 ActivityId = scheduleItem.ActivityId,
-                ActivityName = scheduleItem.ActivityName,
-                ActivityDescription = scheduleItem.ActivityDescription,
-                ActivityImagePath = scheduleItem.ActivityImagePath
+                ActivityName = scheduleItem.Activity != null ? scheduleItem.Activity.Name : null,
+                ActivityDescription = scheduleItem.Activity != null ? scheduleItem.Activity.Description : null,
+                ActivityImagePath = scheduleItem.Activity != null ? scheduleItem.Activity.ImagePath : null
             };
 
             ViewBag.ScheduleId = scheduleItem.ScheduleId;
@@ -191,16 +234,33 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id, Guid scheduleId)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var scheduleItem = await _context.ScheduleItems
+                .Include(x => x.Schedule)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (scheduleItem == null || scheduleItem.Schedule == null || scheduleItem.Schedule.UserId != userId)
+            {
+                return NotFound();
+            }
+
             await _scheduleItemServices.DeleteAsync(id);
+
             return RedirectToAction("Details", "Schedule", new { id = scheduleId });
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var scheduleItem = await _scheduleItemServices.GetByIdAsync(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (scheduleItem == null)
+            var scheduleItem = await _context.ScheduleItems
+                .Include(x => x.Schedule)
+                .Include(x => x.Activity)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (scheduleItem == null || scheduleItem.Schedule == null || scheduleItem.Schedule.UserId != userId)
             {
                 return NotFound();
             }
@@ -215,9 +275,9 @@ namespace VisualScheduleApp.Controllers
                 ModifiedAt = scheduleItem.ModifiedAt,
                 ScheduleId = scheduleItem.ScheduleId,
                 ActivityId = scheduleItem.ActivityId,
-                ActivityName = scheduleItem.ActivityName,
-                ActivityDescription = scheduleItem.ActivityDescription,
-                ActivityImagePath = scheduleItem.ActivityImagePath
+                ActivityName = scheduleItem.Activity != null ? scheduleItem.Activity.Name : null,
+                ActivityDescription = scheduleItem.Activity != null ? scheduleItem.Activity.Description : null,
+                ActivityImagePath = scheduleItem.Activity != null ? scheduleItem.Activity.ImagePath : null
             };
 
             return View(vm);
@@ -226,6 +286,17 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CompletionToggle(Guid id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var scheduleItem = await _context.ScheduleItems
+                .Include(x => x.Schedule)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (scheduleItem == null || scheduleItem.Schedule == null || scheduleItem.Schedule.UserId != userId)
+            {
+                return NotFound();
+            }
+
             var item = await _scheduleItemServices.GetByIdAsync(id);
 
             if (item == null)
