@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using VisualScheduleApp.Core.ServiceInterface;
 using VisualScheduleApp.Models;
 
 namespace VisualScheduleApp.Controllers
@@ -7,15 +8,21 @@ namespace VisualScheduleApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IScheduleServices _scheduleServices;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger, 
+            IScheduleServices scheduleServices
+            )
         {
             _logger = logger;
+            _scheduleServices = scheduleServices;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var schedule = await _scheduleServices.GetTodayAsync();
+            return View(schedule);
         }
 
         public IActionResult Privacy()

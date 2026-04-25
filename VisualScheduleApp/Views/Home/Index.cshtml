@@ -1,8 +1,121 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model VisualScheduleApp.Core.Dto.ScheduleDto
+@using Microsoft.AspNetCore.Identity
+@using VisualScheduleApp.Core.Domain
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Avaleht";
+
+    var appUser = User.Identity != null && User.Identity.IsAuthenticated
+        ? await UserManager.GetUserAsync(User)
+        : null;
+
+    var displayName = !string.IsNullOrWhiteSpace(appUser?.Name)
+        ? appUser.Name
+        : "kasutaja";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="app-page">
+
+    <div class="app-card home-hero">
+        <p class="page-label">Avaleht</p>
+
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <h1>Tere, @displayName!</h1>
+        }
+        else
+        {
+            <h1>Tere!</h1>
+        }
+
+        <p class="text-muted mt-2 mb-0">
+            Tänane kuupäev on @DateTime.Today.ToString("dd.MM.yyyy")
+        </p>
+    </div>
+
+    @if (!(User.Identity?.IsAuthenticated ?? false))
+    {
+        <div class="info-banner">
+            <i class="bi bi-info-circle"></i>
+            <div>
+                <strong>Alustamiseks</strong>
+                <p>Päevaplaanide loomiseks ja kasutamiseks palun logi sisse või registreeri kasutajaks.</p>
+            </div>
+        </div>
+    }
+
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <h3 class="mb-3">Tänased päevaplaanid</h3>
+
+        @if (Model != null)
+        {
+            <div class="app-card d-flex justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <p class="page-label">Päevaplaan</p>
+                    <h2>@Model.Name</h2>
+
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-calendar"></i>
+                        @Model.Date.ToString("dd.MM.yyyy")
+                    </p>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-person"></i>
+                        @Model.ChildName
+                    </p>
+                </div>
+
+                <a asp-controller="Schedule" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-primary">
+                    Ava päevaplaan
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="app-card d-flex justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <p class="page-label">Päevaplaan puudub</p>
+                    <h2>Tänaseks päevaplaani ei ole!</h2>
+                    <p class="text-muted mb-0">
+                        Loo uus päevaplaan, et see ilmuks avalehele.
+                    </p>
+                </div>
+                <a asp-controller="Schedule" asp-action="Create" class="btn btn-primary">
+                    Loo päevaplaan
+                </a>
+            </div>
+        }
+        <div class="app-grid">
+            <a asp-controller="Child" asp-action="Create" class="app-card quick-action-card">
+                <i class="bi bi-person-plus"></i>
+                <span>Lisa laps</span>
+            </a>
+            <a asp-controller="Activity" asp-action="Create" class="app-card quick-action-card">
+                <i class="bi bi-activity"></i>
+                <span>Lisa tegevus</span>
+            </a>
+            <a asp-controller="Schedule" asp-action="Create" class="app-card quick-action-card">
+                <i class="bi bi-calendar-plus"></i>
+                <span>Loo päevaplaan</span>
+            </a>
+            <a asp-controller="Schedule" asp-action="Index" class="app-card quick-action-card">
+                <i class="bi bi-calendar-week"></i>
+                <span>Vaata päevaplaane</span>
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="app-grid">
+            <a asp-area="Identity" asp-page="/Account/Register" class="app-card quick-action-card">
+                <i class="bi bi-person-plus"></i>
+                <span>Registreeri kasutajaks</span>
+            </a>
+            <a asp-area="Identity" asp-page="/Account/Login" class="app-card quick-action-card">
+                <i class="bi bi-box-arrow-in-right"></i>
+                <span>Logi sisse</span>
+            </a>
+        </div>
+    }
 </div>
