@@ -5,9 +5,9 @@ namespace VisualScheduleApp.Core.ServiceInterface
 {
     public interface IActivityServices
     {
-        Task<Activity> Create(ActivityDto dto);
-        Task<Activity?> Update(ActivityDto dto);
+        Task<Activity> CreateAsync(ActivityDto dto);
+        Task<Activity?> UpdateAsync(ActivityDto dto);
         Task<Activity?> DetailAsync(Guid id);
-        Task<Activity?> Delete(Guid id);
+        Task<Activity?> DeleteAsync(Guid id);
     }
 }

@@ -21,7 +21,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             _fileServices = fileServices;
         }
 
-        public async Task<Activity> Create(ActivityDto dto)
+        public async Task<Activity> CreateAsync(ActivityDto dto)
         {
             Activity activity = new Activity
             {
@@ -44,7 +44,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             return activity;
         }
 
-        public async Task<Activity?> Update(ActivityDto dto)
+        public async Task<Activity?> UpdateAsync(ActivityDto dto)
         {
             var activity = await _context.Activities
                 .FirstOrDefaultAsync(x => x.Id == dto.Id);
@@ -78,7 +78,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Activity?> Delete(Guid id)
+        public async Task<Activity?> DeleteAsync(Guid id)
         {
             var activity = await _context.Activities
                 .FirstOrDefaultAsync(x => x.Id == id);

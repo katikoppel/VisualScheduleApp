@@ -67,7 +67,7 @@ namespace VisualScheduleApp.Controllers
                 UserId = userId
             };
 
-            var result = await _childServices.Create(dto);
+            var result = await _childServices.CreateAsync(dto);
 
             if (result == null)
             {
@@ -122,7 +122,7 @@ namespace VisualScheduleApp.Controllers
                 UserId = userId
             };
 
-            var result = await _childServices.Update(dto);
+            var result = await _childServices.UpdateAsync(dto);
 
             if (result == null)
             {
@@ -166,7 +166,7 @@ namespace VisualScheduleApp.Controllers
                 return NotFound();
             }
 
-            var child = await _childServices.Delete(id);
+            var child = await _childServices.DeleteAsync(id);
 
             if (child == null)
             {

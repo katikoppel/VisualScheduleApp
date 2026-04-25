@@ -15,7 +15,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             _context = context;
         }
 
-        public async Task<Child> Create(ChildDto dto)
+        public async Task<Child> CreateAsync(ChildDto dto)
         {
             Child child = new Child();
 
@@ -32,7 +32,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             return child;
         }
 
-        public async Task<Child> Update(ChildDto dto)
+        public async Task<Child> UpdateAsync(ChildDto dto)
         {
             Child child = new Child();
 
@@ -57,7 +57,7 @@ namespace VisualScheduleApp.ApplicationServices.Services
             return result;
         }
 
-        public async Task<Child> Delete(Guid id)
+        public async Task<Child> DeleteAsync(Guid id)
         {
             var result = await _context.Children
                 .FirstOrDefaultAsync(x => x.Id == id);

@@ -5,9 +5,9 @@ namespace VisualScheduleApp.Core.ServiceInterface
 {
     public interface IChildServices
     {
-        Task<Child> Create(ChildDto dto);
-        Task<Child> Update(ChildDto dto);
+        Task<Child> CreateAsync(ChildDto dto);
+        Task<Child> UpdateAsync(ChildDto dto);
         Task<Child> DetailAsync(Guid id);
-        Task<Child> Delete(Guid id);
+        Task<Child> DeleteAsync(Guid id);
     }
 }

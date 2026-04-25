@@ -60,7 +60,7 @@ namespace VisualScheduleApp.Controllers
                 Files = vm.Files
             };
 
-            await _activityServices.Create(dto);
+            await _activityServices.CreateAsync(dto);
 
             return RedirectToAction(nameof(Index));
         }
@@ -101,7 +101,7 @@ namespace VisualScheduleApp.Controllers
                 Files = vm.Files
             };
 
-            await _activityServices.Update(dto);
+            await _activityServices.UpdateAsync(dto);
 
             return RedirectToAction(nameof(Index));
         }
@@ -132,7 +132,7 @@ namespace VisualScheduleApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmation(Guid id)
         {
-            var activity = await _activityServices.Delete(id);
+            var activity = await _activityServices.DeleteAsync(id);
 
             if (activity == null)
             {
