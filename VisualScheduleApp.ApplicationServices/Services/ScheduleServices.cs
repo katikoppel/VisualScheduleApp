@@ -120,5 +120,31 @@ namespace VisualScheduleApp.ApplicationServices.Services
 
             return true;
         }
+
+        public async Task<ScheduleDto?> GetTodayAsync()
+        {
+            var today = DateTime.Today;
+
+            var schedule = await _context.Schedules
+                .Include(x => x.Child)
+                .FirstOrDefaultAsync(x => x.Date.Date == today);
+
+            if (schedule == null)
+            {
+                return null;
+            }
+
+            return new ScheduleDto
+            {
+                Id = schedule.Id,
+                ChildId = schedule.ChildId,
+                ChildName = schedule.Child != null ? schedule.Child.Name : null,
+                Date = schedule.Date,
+                Name = schedule.Name,
+                CreatedAt = schedule.CreatedAt,
+                ModifiedAt = schedule.ModifiedAt,
+                UserId = schedule.UserId
+            };
+        }
     }
 }

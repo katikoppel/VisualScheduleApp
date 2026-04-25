@@ -9,5 +9,7 @@ namespace VisualScheduleApp.Core.ServiceInterface
         Task<ScheduleDto> CreateAsync(ScheduleDto dto);
         Task<ScheduleDto?> UpdateAsync(ScheduleDto dto);
         Task<bool> DeleteAsync(Guid id);
+
+        Task<ScheduleDto?> GetTodayAsync();
     }
 }
