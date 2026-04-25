@@ -14,7 +14,6 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-light bg-white shadow-sm mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">VisualScheduleApp</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -26,21 +25,24 @@
                                 <i class="bi bi-house-door me-1"></i> Avaleht
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Child" asp-action="Index">
-                                <i class="bi bi-person me-1"></i> Lapsed
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Activity" asp-action="Index">
-                                <i class="bi bi-activity me-1"></i> Tegevused
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Schedule" asp-action="Index">
-                                <i class="bi bi-calendar me-1"></i> Päevaplaan
-                            </a>
-                        </li>
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Child" asp-action="Index">
+                                    <i class="bi bi-person me-1"></i> Lapsed
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Activity" asp-action="Index">
+                                    <i class="bi bi-activity me-1"></i> Tegevused
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Schedule" asp-action="Index">
+                                    <i class="bi bi-calendar me-1"></i> Päevaplaan
+                                </a>
+                            </li>
+                        }
                     </ul>
 
                     <partial name="_LoginPartial" />
@@ -56,7 +58,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - VisualScheduleApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - VisualScheduleApp 
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
