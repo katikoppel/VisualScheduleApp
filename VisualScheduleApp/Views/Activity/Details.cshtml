@@ -1,51 +1,46 @@
 ﻿@model VisualScheduleApp.Models.Activities.ActivityViewModel
 
-<h1>Tegevuse detailid</h1>
+@{
+    ViewData["Title"] = "Tegevuse detailid";
+}
 
-<div>
-    <dl class="row">
-        <div class="form-group row">
-            <label asp-for="Id" class="col-sm-2 col-form-label">ID</label>
-            @Html.DisplayFor(model => model.Id)
-        </div>
-    </dl>
+<div class="app-page">
+    <div class="app-card home-hero mb-4">
+        <p class="page-label">Tegevus</p>
+        <h1>Tegevuse detailid</h1>
+        <p class="text-muted mb-0">
+            Siin näed valitud tegevuse andmeid.
+        </p>
+    </div>
+    <div class="app-card">
+        <div class="row align-items-center g-4">
+            <div class="col-md-4 text-center">
+                <img src="@(string.IsNullOrEmpty(Model.ImagePath) ? "/images/noimage.png" : Model.ImagePath)" class="img-fluid rounded" style="max-height: 260px; object-fit: cover;" alt="@Model.Name" />
+            </div>
+            <div class="col-md-8">
+                <p class="page-label">Nimi</p>
+                <h2>@Model.Name</h2>
 
-    <dl class="row">
-        <div class="form-group row">
-            <label asp-for="Name" class="col-sm-2 col-form-label">Nimi</label>
-            @Html.DisplayFor(model => model.Name)
-        </div>
-    </dl>
-
-    <dl class="row">
-        <div class="form-group row">
-            <label asp-for="Description" class="col-sm-2 col-form-label">Kirjeldus</label>
-            @Html.DisplayFor(model => model.Description)
-        </div>
-    </dl>
-
-    <dl class="row">
-        <div class="form-group row">
-            <label asp-for="CreatedAt" class="col-sm-2 col-form-label">Loodud</label>
-            @Html.DisplayFor(model => model.CreatedAt)
-        </div>
-    </dl>
-
-    <dl class="row">
-        <div class="form-group row">
-            <label asp-for="ModifiedAt" class="col-sm-2 col-form-label">Muudetud</label>
-            @Html.DisplayFor(model => model.ModifiedAt)
-        </div>
-    </dl>
-
-    @if (!string.IsNullOrEmpty(Model.ImagePath))
-    {
-        <div class="form-group row">
-            <div class="col-sm-10 offset-sm-2">
-                <img src="@Model.ImagePath" style="max-width:200px;" class="img-thumbnail" />
+                <p class="page-label mt-4">Kirjeldus</p>
+                <p class="text-muted">
+                    @(string.IsNullOrWhiteSpace(Model.Description) ? "Kirjeldus puudub." : Model.Description)
+                </p>
+                <p class="page-label mt-4">Lisainfo</p>
+                <p class="text-muted mb-1">
+                    <strong>Loodud:</strong> @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                </p>
+                <p class="text-muted mb-0">
+                    <strong>Muudetud:</strong> @Model.ModifiedAt.ToString("dd.MM.yyyy HH:mm")
+                </p>
+                <div class="d-flex gap-2 flex-wrap mt-4">
+                    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-primary">
+                        Uuenda
+                    </a>
+                    <a asp-action="Index" asp-controller="Activity" class="btn btn-success">
+                        Tagasi
+                    </a>
+                </div>
             </div>
         </div>
-    }
-    <hr/>
-    <a asp-action="Index" asp-controller="Activity" class="btn btn-danger">Tagasi</a>
+    </div>
 </div>

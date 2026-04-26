@@ -1,67 +1,69 @@
 ﻿@model VisualScheduleApp.Models.Activities.ActivityViewModel
 
-@if (Model.Id != Guid.Empty)
-{
-    <h1>Uuenda tegevust</h1>
-}
-else
-{
-    <h1>Loo uus tegevus</h1>
+@{
+    ViewData["Title"] = Model.Id != Guid.Empty ? "Uuenda tegevust" : "Loo uus tegevus";
 }
 
-<div>
-    <form method="post" enctype="multipart/form-data">
-        <input asp-for="Id" type="hidden" />
-        <input asp-for="CreatedAt" type="hidden" />
-        <input asp-for="ModifiedAt" type="hidden" />
+<div class="app-page">
+    <div class="app-card home-hero mb-4">
+        <p class="page-label">Tegevus</p>
+        @if (Model.Id != Guid.Empty)
+        {
+            <h1>Uuenda tegevust</h1>
+            <p class="text-muted mb-0">Muuda olemasoleva tegevuse andmeid.</p>
+        }
+        else
+        {
+            <h1>Loo uus tegevus</h1>
+            <p class="text-muted mb-0">Lisa uus tegevus, mida saab päevaplaanides kasutada.</p>
+        }
+    </div>
 
-        <div class="form-group row">
-            <label asp-for="Name" class="col-sm-2 col-form-label">Nimi</label>
-            <div class="col-sm-10">
+    <div class="app-card">
+        <form method="post" enctype="multipart/form-data">
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="CreatedAt" type="hidden" />
+            <input asp-for="ModifiedAt" type="hidden" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nimi</label>
                 <input asp-for="Name" class="form-control" />
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label asp-for="Description" class="col-sm-2 col-form-label">Kirjeldus</label>
-            <div class="col-sm-10">
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Kirjeldus</label>
                 <input asp-for="Description" class="form-control" />
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label asp-for="Files" class="col-sm-2 col-form-label">Pilt</label>
-            <div class="col-sm-10">
+            <div class="mb-3">
+                <label asp-for="Files" class="form-label">Pilt</label>
                 <input class="form-control" asp-for="Files" type="file" />
             </div>
-        </div>
 
-        @if (!string.IsNullOrEmpty(Model.ImagePath))
-        {
-            <div class="form-group row">
-                <div class="col-sm-10 offset-sm-2">
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <div class="mb-4">
+                    <p class="page-label">Pilt</p>
                     <img src="@Model.ImagePath" style="max-width:200px;" class="img-thumbnail" />
                 </div>
+            }
+            <div class="mt-4 d-flex gap-2 flex-wrap">
+                @if (Model.Id != Guid.Empty)
+                {
+                    <button asp-action="Update" asp-controller="Activity" type="submit" class="btn btn-primary">
+                        Uuenda
+                    </button>
+                }
+                else
+                {
+                    <button asp-action="Create" asp-controller="Activity" type="submit" class="btn btn-primary">
+                        Loo uus
+                    </button>
+                }
+                <a asp-action="Index" asp-controller="Activity" class="btn btn-success">
+                    Tagasi
+                </a>
             </div>
-        }
-
-        <div class="mt-4 d-flex gap-2">
-            @if (Model.Id != Guid.Empty)
-            {
-                <button asp-action="Update" asp-controller="Activity" type="submit" class="btn btn-primary">
-                    Uuenda
-                </button>
-            }
-            else
-            {
-                <button asp-action="Create" asp-controller="Activity" type="submit" class="btn btn-primary">
-                    Loo uus
-                </button>
-            }
-
-            <a asp-action="Index" asp-controller="Activity" class="btn btn-success">
-                Tagasi
-            </a>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>

@@ -1,41 +1,65 @@
 ﻿@model IEnumerable<VisualScheduleApp.Models.Activities.ActivityViewModel>
 
 @{
-    ViewData["Title"] = "Activities";
+    ViewData["Title"] = "Tegevused";
 }
 
-<h1>Tegevused</h1>
+<div class="app-page">
+    <div class="app-card home-hero mb-4">
+        <p class="page-label">Tegevused</p>
+        <h1>Tegevused</h1>
+        <p class="text-muted mb-0">
+            Siin saad hallata kõiki tegevusi, mida saab päevaplaanides kasutada.
+        </p>
+    </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Loo uus</a>
-</p>
+    <div class="d-flex justify-content-end mb-4">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Loo uus
+        </a>
+    </div>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Pilt</th>
-            <th>Nimi</th>
-            <th>Kirjeldus</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var activity in Model)
-        {
-            <tr>
-                <td>
-                    <img src="@(activity.ImagePath ?? "/images/noimage.png")"
-                         style="object-fit:cover; max-width:180px; height:auto;" />
-                </td>
-                <td>@activity.Name</td>
-                <td>@activity.Description</td>
+    @if (Model != null && Model.Any())
+    {
+        <div class="app-grid">
+            @foreach (var activity in Model)
+            {
+                <div class="card h-100">
+                    <img src="@(activity.ImagePath ?? "/images/noimage.png")" class="card-img-top" alt="@activity.Name" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-2">@activity.Name</h5>
+                        <p class="text-muted mb-3">
+                            @(string.IsNullOrWhiteSpace(activity.Description)
+                                                ? "Kirjeldus puudub."
+                                                : activity.Description)
+                </p>
+                        <div class="mt-auto d-flex justify-content-center gap-2 flex-wrap">
+                            <a asp-action="Details" asp-route-id="@activity.Id" class="btn btn-success btn-sm">
+                                Detailid
+                            </a>
+                            <a asp-action="Update" asp-route-id="@activity.Id" class="btn btn-primary btn-sm">
+                                Uuenda
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@activity.Id" class="btn btn-danger btn-sm">
+                                Kustuta
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                }
+        </div>
+    }
+    else
+    {
+        <div class="app-card text-center">
+            <h4>Tegevusi ei ole veel loodud.</h4>
+            <p class="text-muted">
+                Alusta uue tegevuse loomisega.
+            </p>
+            <a asp-action="Create" class="btn btn-primary">
+                Loo esimene tegevus.
+            </a>
+        </div>
+    }
 
-                <td>
-                    <a asp-action="Details" asp-route-id="@activity.Id" class="btn btn-success btn-sm">Detailid</a>
-                    <a asp-action="Update" asp-route-id="@activity.Id" class="btn btn-primary btn-sm">Uuenda</a>
-                    <a asp-action="Delete" asp-route-id="@activity.Id" class="btn btn-danger btn-sm">Kustuta</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+</div>

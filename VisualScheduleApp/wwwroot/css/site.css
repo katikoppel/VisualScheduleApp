@@ -258,3 +258,37 @@ body {
         padding: 24px;
     }
 }
+
+.today-calendar {
+    width: 150px;
+    padding: 16px;
+    border-radius: 20px;
+    background: white;
+    border: 1px solid #ddd6fe;
+    box-shadow: 0 8px 20px rgba(109, 93, 252, 0.12);
+    text-align: center;
+}
+
+.calendar-year {
+    color: #6d5dfc;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.calendar-day {
+    font-size: 42px;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1.1;
+}
+
+.calendar-month {
+    font-size: 16px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.calendar-weekday {
+    color: #64748b;
+    font-size: 13px;
+}
