@@ -4,34 +4,66 @@
     ViewData["Title"] = "Päevaplaanid";
 }
 
-<h1>Päevaplaanid</h1>
+<div class="app-page">
+    <div class="app-card home-hero mb-4">
+        <p class="page-label">Päevaplaanid</p>
+        <h1>Kõik päevaplaanid</h1>
+        <p class="text-muted mb-0">
+            Siin saad vaadata, lisada ja hallata laste visuaalseid päevaplaane.
+        </p>
+    </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Loo uus</a>
-</p>
+    <div class="d-flex justify-content-end mb-4">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Loo uus
+        </a>
+    </div>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Nimi</th>
-            <th>Kuupäev</th>
-            <th>Laps</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var schedule in Model)
-        {
-            <tr>
-                <td>@schedule.Name</td>
-                <td>@schedule.Date.ToString("dd.MM.yyyy")</td>
-                <td>@schedule.ChildName</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@schedule.Id" class="btn btn-success btn-sm">Detailid</a>
-                    <a asp-action="Update" asp-route-id="@schedule.Id" class="btn btn-primary btn-sm">Uuenda</a>
-                    <a asp-action="Delete" asp-route-id="@schedule.Id" class="btn btn-danger btn-sm">Kustuta</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    @if (Model != null && Model.Any())
+    {
+        <div class="app-grid">
+            @foreach (var schedule in Model)
+            {
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-3">@schedule.Name</h5>
+                        <p class="text-muted mb-1">
+                            <i class="bi bi-calendar"></i>
+                            @schedule.Date.ToString("dd.MM.yyyy")
+                        </p>
+                        <p class="text-muted mb-3">
+                            <i class="bi bi-person"></i>
+                            @schedule.ChildName
+                        </p>
+
+                        <div class="mt-auto d-flex justify-content-center gap-2 flex-wrap">
+                            <a asp-action="Details" asp-route-id="@schedule.Id" class="btn btn-primary btn-sm">
+                                Ava
+                            </a>
+                            <a asp-action="Update" asp-route-id="@schedule.Id" class="btn btn-light btn-sm">
+                                Uuenda
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@schedule.Id" class="btn btn-danger btn-sm">
+                                Kustuta
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="app-card text-center">
+            <h4>Päevaplaane ei ole veel loodud</h4>
+            <p class="text-muted">
+                Alusta uue päevaplaani loomisega.
+            </p>
+
+            <a asp-action="Create" class="btn btn-primary">
+                Loo esimene päevaplaan
+            </a>
+        </div>
+    }
+
+</div>

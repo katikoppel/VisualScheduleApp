@@ -4,32 +4,37 @@
     ViewData["Title"] = "Kustuta päevaplaan";
 }
 
-<h1>Kustuta päevaplaan</h1>
+<div class="app-page">
+    <div class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+        <i class="bi bi-exclamation-triangle"></i>
+        <div>
+            <strong>Kustutamise kinnitus</strong><br />
+            Kas oled kindel, et soovid selle päevaplaani kustutada?
+        </div>
+    </div>
 
-<h3>Kas oled kindel, et soovid selle päevaplaani kustutada?</h3>
+    <div class="app-card">
+        <p class="page-label">Päevaplaan</p>
+        <h1>@Model.Name</h1>
+        <div class="mt-4">
+            <p class="text-muted mb-2">
+                <i class="bi bi-calendar"></i>
+                @Model.Date.ToString("dd.MM.yyyy")
+            </p>
+            <p class="text-muted mb-0">
+                <i class="bi bi-person"></i>
+                @Model.ChildName
+            </p>
+        </div>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Nimi</dt>
-        <dd class="col-sm-10">@Model.Name</dd>
-
-        <dt class="col-sm-2">Kuupäev</dt>
-        <dd class="col-sm-10">@Model.Date.ToString("dd.MM.yyyy")</dd>
-
-        <dt class="col-sm-2">Lapse ID</dt>
-        <dd class="col-sm-10">@Model.ChildId</dd>
-
-        @if (!string.IsNullOrEmpty(Model.ChildName))
-        {
-            <dt class="col-sm-2">Lapse nimi</dt>
-            <dd class="col-sm-10">@Model.ChildName</dd>
-        }
-    </dl>
-
-    <form asp-action="DeleteConfirmation" method="post">
-        <input asp-for="Id" type="hidden" />
-        <button type="submit" class="btn btn-danger">Kustuta</button>
-        <a asp-action="Index" class="btn btn-success">Tagasi</a>
-    </form>
+        <form asp-action="DeleteConfirmation" method="post" class="mt-4 d-flex gap-2 flex-wrap">
+            <input asp-for="Id" type="hidden" />
+            <button type="submit" class="btn btn-danger">
+                Kustuta
+            </button>
+            <a asp-action="Index" class="btn btn-success">
+                Tagasi
+            </a>
+        </form>
+    </div>
 </div>
