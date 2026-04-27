@@ -6,31 +6,41 @@
 @{
     ViewData["Title"] = "Avaleht";
 
-    var appUser = User.Identity != null && User.Identity.IsAuthenticated
+    var isLoggedIn = User.Identity != null && User.Identity.IsAuthenticated;
+
+    var appUser = isLoggedIn
         ? await UserManager.GetUserAsync(User)
         : null;
 
     var displayName = !string.IsNullOrWhiteSpace(appUser?.Name)
         ? appUser.Name
-        : "kasutaja";
+        : appUser?.Email;
 }
 
-<div class="app-card home-hero mb-4">
-    <div class="d-flex justify-content-between align-items-center flex-wrap">
+<div class="app-page">
+    <div class="app-card home-hero mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
 
-        <div>
-            <p class="page-label">Avaleht</p>
-            <h1>Tere, @displayName!</h1>
+            <div>
+                <p class="page-label">Avaleht</p>
 
-            <p class="text-muted mt-2 mb-0">
-                Siin saad hallata laste päevaplaane ja tegevusi.
-            </p>
-        </div>
-
-        <div class="today-calendar ms-md-4 mt-4 mt-md-0">
-            <div class="calendar-year">
-                @DateTime.Today.ToString("yyyy")
+                @if (isLoggedIn)
+                {
+                    <h1>Tere, @displayName!</h1>
+                }
+                else
+                {
+                    <h1>Tere!</h1>
+                }
+                <p class="text-muted mt-2 mb-0">
+                    Siin saad hallata laste päevaplaane ja tegevusi.
+                </p>
             </div>
+
+            <div class="today-calendar ms-md-4 mt-4 mt-md-0">
+                <div class="calendar-year">
+                    @DateTime.Today.ToString("yyyy")
+                </div>
 
             <div class="calendar-day">
                 @DateTime.Today.ToString("dd")
@@ -38,16 +48,16 @@
 
             <div class="calendar-month">
                 @DateTime.Today.ToString("MMMM")
-            </div>
+                </div>
 
-            <div class="calendar-weekday">
-                @DateTime.Today.ToString("dddd")
+                <div class="calendar-weekday">
+                    @DateTime.Today.ToString("dddd")
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-    @if (!(User.Identity?.IsAuthenticated ?? false))
+    @if (!isLoggedIn)
     {
         <div class="info-banner">
             <i class="bi bi-info-circle"></i>
@@ -59,7 +69,7 @@
         </div>
     }
 
-    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    @if (isLoggedIn)
     {
         @if (Model != null)
         {
@@ -147,3 +157,4 @@
             </a>
         </div>
     }
+</div>
