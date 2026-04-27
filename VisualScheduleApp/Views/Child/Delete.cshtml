@@ -1,32 +1,48 @@
 ﻿@model VisualScheduleApp.Models.Children.ChildViewModel
 
 @{
-    ViewData["Title"] = "Kustuta";
+    ViewData["Title"] = "Kustuta laps";
 }
 
-<h1>Kustuta</h1>
+<div class="app-page">
+    <div class="app-card home-hero mb-4">
+        <p class="page-label">Laps</p>
+        <h1>Kustuta laps</h1>
+        <p class="text-muted mb-0">
+            Kas oled kindel, et soovid selle lapse kustutada?
+        </p>
+    </div>
 
-<div class="alert alert-danger">
-    Kas oled kindel, et soovid selle lapse süsteemist eemaldada?
-</div>
+    <div class="app-card">
+        <div class="row align-items-center g-4">
 
-<div class="card">
-    <div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-3">Nimi</dt>
-            <dd class="col-sm-9">@Model.Name</dd>
+            <div class="col-md-8">
+                <p class="page-label">Nimi</p>
+                <h2>@Model.Name</h2>
 
-            <dt class="col-sm-3">Sünniaeg</dt>
-            <dd class="col-sm-9">@Model.BirthDate.ToShortDateString()</dd>
+                <p class="page-label mt-4">Sünniaeg</p>
+                <p class="text-muted">
+                    @Model.BirthDate.ToString("dd.MM.yyyy")
+                </p>
 
-            <dt class="col-sm-3">Vanus</dt>
-            <dd class="col-sm-9">@Model.Age</dd>
-        </dl>
+                <p class="page-label mt-4">Vanus</p>
+                <p class="text-muted">
+                    @Model.Age
+                </p>
 
-        <form asp-action="DeleteConfirmation" method="post">
-            <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-danger">Kustuta</button>
-            <a asp-action="Index" class="btn btn-primary">Tagasi</a>
-        </form>
+                <form asp-action="DeleteConfirmation" method="post" class="mt-4 d-flex gap-2 flex-wrap">
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <button type="submit" class="btn btn-danger">
+                        Kustuta
+                    </button>
+
+                    <a asp-action="Index" asp-controller="Child" class="btn btn-success">
+                        Tagasi
+                    </a>
+                </form>
+            </div>
+
+        </div>
     </div>
 </div>

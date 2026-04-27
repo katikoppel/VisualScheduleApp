@@ -1,51 +1,58 @@
 ﻿@model VisualScheduleApp.Models.Children.ChildViewModel
 
-@if (Model.Id != Guid.Empty)
-{
-    <h1>Uuenda lapse infot</h1>
-}
-else
-{
-    <h1>Lisa uus laps</h1>
+@{
+    ViewData["Title"] = Model.Id != Guid.Empty ? "Uuenda lapse infot" : "Lisa uus laps";
 }
 
-<div>
-    <form method="post" enctype="multipart/form-data">
-        <input asp-for="Id" type="hidden" />
-        <input asp-for="CreatedAt" type="hidden" />
-        <input asp-for="ModifiedAt" type="hidden" />
+<div class="app-page">
+    <div class="app-card home-hero mb-4">
+        <p class="page-label">Laps</p>
 
-        <div class="form-group row">
-            <label asp-for="Name" class="col-sm-2 col-form-label">Nimi</label>
-            <div class="col-sm-10">
-                <input  asp-for="Name" class="form-control" />
+        @if (Model.Id != Guid.Empty)
+        {
+            <h1>Uuenda lapse infot</h1>
+            <p class="text-muted mb-0">Muuda olemasoleva lapse andmeid.</p>
+        }
+        else
+        {
+            <h1>Lisa uus laps</h1>
+            <p class="text-muted mb-0">Lisa laps, kellele päevaplaani koostada.</p>
+        }
+    </div>
+
+    <div class="app-card">
+        <form method="post">
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="CreatedAt" type="hidden" />
+            <input asp-for="ModifiedAt" type="hidden" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nimi</label>
+                <input asp-for="Name" class="form-control" />
             </div>
-        </div>
-
-        <div class="form-group row">
-            <label asp-for="BirthDate" class="col-sm-2 col-form-label">Sünniaeg</label>
-            <div class="col-sm-10">
-                <input asp-for="BirthDate" class="form-control" />
+            <div class="mb-3">
+                <label asp-for="BirthDate" class="form-label">Sünniaeg</label>
+                <input asp-for="BirthDate" type="date" class="form-control" />
             </div>
-        </div>
 
-        <div class="mt-4 d-flex gap-2">
-            @if (Model.Id != Guid.Empty)
-            {
-                <button asp-action="update" asp-controller="Child" type="submit" class="btn btn-primary">
-                    Uuenda
-                </button>
-            }
-            else
-            {
-                <button asp-action="create" asp-controller="Child" type="submit" class="btn btn-primary">
-                    Lisa uus
-                </button>
-            }
+            <div class="mt-4 d-flex gap-2 flex-wrap">
+                @if (Model.Id != Guid.Empty)
+                {
+                    <button asp-action="Update" asp-controller="Child" type="submit" class="btn btn-primary">
+                        Uuenda
+                    </button>
+                }
+                else
+                {
+                    <button asp-action="Create" asp-controller="Child" type="submit" class="btn btn-primary">
+                        Lisa uus
+                    </button>
+                }
 
-            <a asp-action="Index" asp-controller="Child" class="btn btn-success">
-                Tagasi
-            </a>
-        </div>
-    </form>
+                <a asp-action="Index" asp-controller="Child" class="btn btn-success">
+                    Tagasi
+                </a>
+            </div>
+        </form>
+    </div>
 </div>

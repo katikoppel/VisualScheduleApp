@@ -1,34 +1,52 @@
 ﻿@model VisualScheduleApp.Models.Children.ChildViewModel
 
 @{
-    ViewData["Title"] = "Lapse detailne info";
+    ViewData["Title"] = "Lapse detailid";
 }
 
-<h1>Lapse detailne info</h1>
+<div class="app-page">
+    <div class="app-card home-hero mb-4">
+        <p class="page-label">Laps</p>
+        <h1>Lapse detailid</h1>
+        <p class="text-muted mb-0">
+            Siin näed valitud lapse andmeid.
+        </p>
+    </div>
 
-<div class="card">
-    <div class="card-body">
-        <h4 class="card-title">@Model.Name</h4>
-        <hr />
+    <div class="app-card">
+        <div class="row align-items-center g-4">
+            <div class="col-md-8">
+                <p class="page-label">Nimi</p>
+                <h2>@Model.Name</h2>
 
-        <dl class="row">
-            <dt class="col-sm-3">Nimi</dt>
-            <dd class="col-sm-9">@Model.Name</dd>
+                <p class="page-label mt-4">Sünniaeg</p>
+                <p class="text-muted">
+                    @Model.BirthDate.ToString("dd.MM.yyyy")
+                </p>
 
-            <dt class="col-sm-3">Sünniaeg</dt>
-            <dd class="col-sm-9">@Model.BirthDate.ToShortDateString()</dd>
+                <p class="page-label mt-4">Vanus</p>
+                <p class="text-muted">
+                    @Model.Age
+                </p>
 
-            <dt class="col-sm-3">Vanus</dt>
-            <dd class="col-sm-9">@Model.Age</dd>
+                <p class="page-label mt-4">Lisainfo</p>
+                <p class="text-muted mb-1">
+                    <strong>Loodud:</strong> @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                </p>
+                <p class="text-muted mb-0">
+                    <strong>Muudetud:</strong> @Model.ModifiedAt.ToString("dd.MM.yyyy HH:mm")
+                </p>
 
-            <dt class="col-sm-3">Loodud</dt>
-            <dd class="col-sm-9">@Model.CreatedAt</dd>
+                <div class="d-flex gap-2 flex-wrap mt-4">
+                    <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-primary">
+                        Uuenda
+                    </a>
 
-            <dt class="col-sm-3">Muudetud</dt>
-            <dd class="col-sm-9">@Model.ModifiedAt</dd>
-        </dl>
-
-        <a asp-action="Update" asp-route-id="@Model.Id" class="btn btn-success">Uuenda</a>
-        <a asp-action="Index" class="btn btn-danger">Tagasi</a>
+                    <a asp-action="Index" asp-controller="Child" class="btn btn-success">
+                        Tagasi
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
