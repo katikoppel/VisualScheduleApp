@@ -56,6 +56,7 @@ namespace VisualScheduleApp.Tests
         {
             // Arrange
             var created = await Svc<IActivityServices>().CreateAsync(MockActivityDto());
+            var oldModifiedAt = created.ModifiedAt;
 
             var updateDto = new ActivityDto
             {
@@ -72,8 +73,7 @@ namespace VisualScheduleApp.Tests
             Assert.Equal(created.Id, result.Id);
             Assert.Equal("Uus tegevus", result.Name);
             Assert.Equal("Uus kirjeldus", result.Description);
-            Assert.NotEqual(created.Name, result.Name);
-            Assert.NotEqual(created.ModifiedAt, result.ModifiedAt);
+            Assert.NotEqual(oldModifiedAt, result.ModifiedAt);
         }
 
         [Fact]
