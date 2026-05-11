@@ -154,6 +154,15 @@ namespace VisualScheduleApp.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
+                var googleName = info.Principal.FindFirstValue(ClaimTypes.Name);
+
+                if (string.IsNullOrWhiteSpace(googleName))
+                {
+                    googleName = Input.Email.Split('@')[0];
+                }
+
+                user.Name = googleName;
+
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
